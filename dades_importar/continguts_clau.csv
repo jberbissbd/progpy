@@ -1,0 +1,95 @@
+"ID_cclau","cclau_ord","cclau_desc","cclau_ambit","cclau_pref","cclau_num"
+1,1,"Textos de les ciències socials: descripció, explicació,  justificació, interpretació i argumentació, i vocabulari  propi.",1,"CC",1
+2,2,"Estratègies comunicatives en situacions d’interacció oral.",1,"CC",2
+3,3,"Cronologia i temps històric.",1,"CC",3
+4,4,"Coneixements històrics temporals.",1,"CC",4
+5,5,"Fonts primàries i secundàries.",1,"CC",5
+6,6,"Vincles entre el passat, el present i el futur. L’empatia històrica.",1,"CC",6
+7,7,"La memòria històrica.",1,"CC",7
+8,8,"Elements de canvi i continuïtat entre etapes històriques. Arrels històriques de la contemporaneïtat.",1,"CC",8
+9,9,"El passat i el present de Catalunya en el context d’Espanya i d’Europa.",1,"CC",9
+10,10,"Models d’interpretació geogràfics i de fets històrics.",1,"CC",10
+11,11,"Les dones en la història i en les societats actuals.",1,"CC",11
+12,12,"Les manifestacions artístiques en el seu context històric. Valoració estètica. Estils i llenguatges expressius.",1,"CC",12
+13,13,"Anàlisi d’imatges i referents estètics. Descodificació de llenguatges icònics, simbòlics i audiovisuals.",1,"CC",13
+14,14,"Defensa, protecció i difusió del patrimoni historicoartístic i cultural.",1,"CC",14
+15,15,"Canvis, continuïtats i ruptures en el món de la cultura i l’art, i en les mentalitats.",1,"CC",15
+16,16,"La diversitat cultural i religiosa com a riquesa de les societats. Relativisme cultural.",1,"CC",16
+17,17,"Cerca, anàlisi i contrast d’informacions diverses.",1,"CC",17
+18,18,"Lectura i interpretació de mapes, plànols i imatges de diferents característiques i suports. Eines d’orientació espacial.",1,"CC",18
+19,19,"Interacció entre els grups humans i el medi. Activitats econòmiques i el seu impacte mediambiental. Matèries primeres i fonts d’energia.",1,"CC",19
+20,20,"Principals zones bioclimàtiques de Catalunya, Espanya, Europa i el món. Defensa i preservació del patrimoni paisatgístic.",1,"CC",20
+21,21,"Trets demogràfics, econòmics, socials, polítics i culturals de la societat catalana, espanyola, europea i del món. Població i  poblament. Migracions.",1,"CC",21
+22,22,"Els grans àmbits geopolítics i econòmics. Models econòmics.",1,"CC",22
+23,23,"Organització política i territorial: àmbits local, nacional i internacional.",1,"CC",23
+24,24,"Globalització i intercanvi desigual. Mecanismes de cooperació internacional.",1,"CC",24
+25,25,"Desenvolupament humà sostenible.",1,"CC",25
+26,26,"Funcionament del sistema democràtic.",1,"CC",26
+27,27,"Drets humans.",1,"CC",27
+28,28,"Situacions de desigualtat, injustícia i discriminació.",1,"CC",28
+29,29,"Focus de conflicte en el món actual.",1,"CC",29
+30,30,"Identitats personals i col·lectives. Pertinença i cohesió social.",1,"CC",30
+31,1,"Sentit del nombre i de les operacions.",2,"CC",1
+32,2,"Raonament proporcional.",2,"CC",2
+33,3,"Càlcul (mental, estimatiu, algorísmic, amb calculadora).",2,"CC",3
+34,4,"Llenguatge i càlcul algebraic.",2,"CC",4
+35,5,"Patrons, relacions i funcions.",2,"CC",5
+36,6,"Representació de funcions: gràfics, taules i fórmules.",2,"CC",6
+37,7,"Anàlisi del canvi i tipus de funcions.",2,"CC",7
+38,8,"Sentit espacial i representació de figures tridimensionals.",2,"CC",8
+39,9,"Figures geomètriques, característiques, propietats i processos de construcció.",2,"CC",9
+40,10,"Relacions i transformacions geomètriques.",2,"CC",10
+41,11,"Magnituds i mesura.",2,"CC",11
+42,12,"Relacions mètriques i càlcul de mesures en figures.",2,"CC",12
+43,13,"Sentit de l’estadística.",2,"CC",13
+44,14,"Dades, taules i gràfics estadístics.",2,"CC",14
+45,15,"Mètodes estadístics d’anàlisi de dades.",2,"CC",15
+46,16,"Sentit i mesura de la probabilitat.",2,"CC",16
+47,1,"Funcionalitats bàsiques dels dispositius.",8,"CCD",1
+48,2,"Tipus de connexions entre aparells.",8,"CCD",2
+49,3,"Emmagatzematge de dades i còpies de seguretat.",8,"CCD",3
+50,4,"Conceptes bàsics del sistema operatiu.",8,"CCD",4
+51,5,"Seguretat informàtica.",8,"CCD",5
+52,6,"Robòtica i programació.",8,"CCD",6
+53,7,"Realitat virtual i augmentada.",8,"CCD",7
+54,8,"Sistemes de projecció.",8,"CCD",8
+55,9,"Eines d’edició de documents de text, presentacions multimèdia i processament de dades numèriques.",8,"CCD",9
+56,10,"Llenguatge audiovisual: imatge fixa, so i vídeo.",8,"CCD",10
+57,11,"Funcionalitats dels navegadors.",8,"CCD",11
+58,12,"Cercadors: tipus de cerca i planificació.",8,"CCD",12
+59,13,"Fonts d’informació digital: selecció i valoració.",8,"CCD",13
+60,14,"Selecció, catalogació, emmagatzematge i compartició de la informació.",8,"CCD",14
+61,15,"Ètica i legalitat en l’ús i instal·lació de programes, comunicacions i publicacions, i en la utilització de la informació.",8,"CCD",15
+62,16,"Tractament de la informació.",8,"CCD",16
+63,17,"Construcció de coneixement: tècniques i instruments.",8,"CCD",17
+64,18,"Entorn personal d’aprenentatge (EPA).",8,"CCD",18
+65,19,"Dossiers personals d’aprenentatge (portafolis digital).",8,"CCD",19
+66,20,"Sistemes de comunicació.",8,"CCD",20
+67,21,"Normes de cortesia a la xarxa.",8,"CCD",21
+68,22,"Entorns de treball i aprenentatge col·laboratiu.",8,"CCD",22
+69,23,"Ciutadania digital: tràmits, gestió, lleure i cultura.",8,"CCD",23
+70,24,"Aprenentatge permanent: entorns virtuals d’aprenentatge, recursos per a l’aprenentatge formal i no formal a la xarxa...",8,"CCD",24
+71,25,"Ergonomia: salut física i psíquica.",8,"CCD",25
+72,26,"Entorns virtuals segurs.",8,"CCD",26
+73,27,"Sostenibilitat: consum d’energia, despesa d’impressió, mesures d’estalvi, substitució de dispositius, etc.",8,"CCD",27
+74,28,"Identitat digital: visibilitat, reputació, gestió de la privacitat pública i aliena.",8,"CCD",28
+82,1,"Capacitats físiques i sensorials.",9,"CC",1
+83,2,"Capacitats cognitives.",9,"CC",2
+84,3,"Capacitats emocionals.",9,"CC",3
+85,4,"Hàbits saludables.",9,"CC",4
+86,5,"Actitud de superació personal.",9,"CC",5
+87,6,"Hàbits d’aprenentatge.",9,"CC",6
+88,7,"Planificació dels aprenentatges.",9,"CC",7
+89,8,"Organització del coneixement.",9,"CC",8
+90,9,"Consolidació i recuperació del coneixement.",9,"CC",9
+91,10,"Transferència dels aprenentatges.",9,"CC",10
+92,11,"Característiques de la societat actual.",9,"CC",11
+93,12,"Aprenentatge continuat al llarg de la vida.",9,"CC",12
+94,13,"Actituds i hàbits en la societat i en el món professional.",9,"CC",13
+95,14,"Habilitats i actituds per al treball en grup.",9,"CC",14
+96,15,"Dinàmiques de cohesió de grup i col·laboratives.",9,"CC",15
+97,16,"Eines digitals col·laboratives.",9,"CC",16
+98,17,"Habilitats i actituds per a la participació.",9,"CC",17
+99,18,"Espais de participació.",9,"CC",18
+100,19,"Recursos i tècniques de participació.",9,"CC",19
+101,20,"Eines digitals de participació.",9,"CC",20
