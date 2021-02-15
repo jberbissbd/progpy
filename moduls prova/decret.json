@@ -1,0 +1,32 @@
+{
+    "Taula": {
+        "N_competencia": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+        ],
+        "Text competencia": [
+            "Traduir un problema a llenguatge matem\u00e0tic o a una representaci\u00f3 matem\u00e0tica utilitzant variables, s\u00edmbols, diagrames imodels adequats.",
+            "Emprar conceptes, eines i estrat\u00e8gies matem\u00e0tiques per resoldre problemes.",
+            "Mantenir una actitud de recerca davant d\u2019un problema assajant estrat\u00e8gies diverses.",
+            "Generar preguntes de caire matem\u00e0tic i plantejar problemes.",
+            "Construir, expressar i contrastar argumentacions per justificar i validar les afirmacions que es fan en matem\u00e0tiques.",
+            "Emprar el raonament matem\u00e0tic en entorns no ma-tem\u00e0tics.",
+            "Usar les relacions que hi ha entre les diverses parts de les matem\u00e0tiques per analitzar situacions i per raonar.",
+            "Identificar les matem\u00e0tiques implicades en situacions properes i acad\u00e8miques i cercar situacions que es puguin relacionaramb idees matem\u00e0tiques concretes.",
+            "Representar un concepte o relaci\u00f3 matem\u00e0tica de diverses maneres i usar el canvi de representaci\u00f3 com a estrat\u00e8gia de treball matem\u00e0tic.",
+            "Expressar idees matem\u00e0tiques amb claredat i precisi\u00f3 i comprendre les dels altres.",
+            "Emprar la comunicaci\u00f3 i el treball col\u00b7laboratiu per compartir i construir coneixement a partir d\u2019idees matem\u00e0tiques.",
+            "Seleccionar i usar tecnologies diverses per gestionar i mostrar informaci\u00f3, i visualitzar i estructurar idees o processos matem\u00e0tics."
+        ]
+    }
+}

@@ -1,7 +1,8 @@
 from odf.opendocument import OpenDocumentText
 from odf.style import Style, TextProperties
 from odf.text import H, P, Span
-from odf import table, text
+from odf.table import Table, TableRow
+# import datatable
 
 textdoc = OpenDocumentText()
 # Styles
@@ -22,6 +23,8 @@ boldpart = Span(stylename=boldstyle, text="This part is bold. ")
 p.addElement(boldpart)
 p.addText("This is after bold.")
 textdoc.text.addElement(p)
-# Prova de taula, utilitzar datable.py
-
+# Prova de taula, utilitzar datatable
+llista_prova = ['hola', 'adeu', 'fins aviat']
+taula = Table
+taula.TableRow(llista_prova)
 textdoc.save("myfirstdocument.odt")
