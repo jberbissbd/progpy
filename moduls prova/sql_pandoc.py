@@ -17,9 +17,6 @@ for row in cur.fetchall():
     descripcio.append(row[1])
 result = {'N_competencia': valor, 'Text competencia': descripcio}
 cur.close()
-# Escrivim a arxiu json:
-# with open("decret.json", "w") as outfile:
-#    simplejson.dump(result, outfile, indent=(4))
 # Escrivim a arxiu json, però amb AST (Abstract Syntax Tree):
 result_ast = ast.parse(result)
 with open("decret.json", "w") as outfile:
