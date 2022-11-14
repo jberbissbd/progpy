@@ -1,4 +1,0 @@
-- provar exportació a xml
-- realitzar consulta i guardar-ne el resultat
-- com guardem el que ja s'ha fet?
-- Possibles funcions: crear, exportar, actualitzar.
