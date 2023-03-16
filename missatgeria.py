@@ -22,7 +22,7 @@ class saber:
 
 
 @dataclass(repr=False)
-class materia(dataclass):
+class materia:
     id_materia: int
     nom: str
     curs: int
