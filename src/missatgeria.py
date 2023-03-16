@@ -25,7 +25,7 @@ class saber:
 class materia:
     id_materia: int
     nom: str
-    curs: int
+    curs: str
     criteris: list
     sabers: list
     competencies: list
