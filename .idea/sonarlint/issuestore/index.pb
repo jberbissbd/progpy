@@ -1631,8 +1631,5 @@ u
 Evenv/lib/python3.10/site-packages/pip/_vendor/platformdirs/android.py,3/b/3bdcde5b8657fb6f024f0cf0e7fcbbc0be670849
 m
 =venv/lib/python3.10/site-packages/_distutils_hack/__init__.py,8/5/85ce4c84f9af92bcb8427add1a29b3200202360b
-:
-
-.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
 >
 missatgeria.py,d/b/dba267726110e1d3bb4059b65e122b508f34cb97
