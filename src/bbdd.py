@@ -44,12 +44,13 @@ class Llistadormateries(Connectorbbdd):
         self.taula = "materia"
 
     def llistar_materies(self):
+        """Funció que retorna una llista de totes les materies de la base de dades"""
         try:
             self.cursor.execute(f"SELECT * FROM {self.taula}")
             resultat = self.cursor.fetchall()
             return resultat
-        except sqlite3.OperationalError as e:
-            raise Warning(f"Error al obtenir la llista de materies: {e}")
+        except sqlite3.OperationalError as error:
+            raise Warning("Error al obtenir la llista de materies:") from error
 
     def llistar_materies_completes(self):
         """Funció que retorna una llista de totes les materies completes (materia + curs) de la base de dades
@@ -59,13 +60,13 @@ class Llistadormateries(Connectorbbdd):
             self.cursor.execute(f"SELECT * FROM {self.taula}")
             resultat = self.cursor.fetchall()
             return resultat
-        except Exception as e:
-            raise Warning(f"Error al obtenir la llista de materies completes: {e}")
+        except Exception as tipus_error:
+            raise Warning("Error al obtenir la llista de materies completes:") from tipus_error
 
     def combinar_info_materies(self):
         """Retorna una llista amb totes les matèries de la base de dades combinada amb la informació de les taules
         relacionades
-        :returns: lista de tuples"""
+        :returns: lista de tuples, ValueError si no s'ha pogut obtenir la llista"""
         if self.llistar_materies() is not None and self.llistar_materies_completes() is not None:
             try:
                 self.cursor.execute("SELECT matcomp_id, materia_nom,materia_id, nivell_nom, etapa_desc FROM "
@@ -75,12 +76,8 @@ class Llistadormateries(Connectorbbdd):
                 self.cursor.close()
                 if resultat_consulta is not None:
                     return resultat_consulta
-                else:
-                    raise ValueError("Error: No s'ha pogut obtenir la llista de materies.")
-            except sqlite3.OperationalError as missatge_error:
-                raise ValueError("Error: No s'ha pogut obtenir la llista de materies. Error: " + str(missatge_error))
-        else:
-            raise ValueError("Error: No s'ha pogut obtenir la llista de materies.")
+            except sqlite3.OperationalError as error_basedades:
+                raise ValueError("Error: No s'ha pogut obtenir la llista de materies.") from error_basedades
 
 
 class Llistadorsabers(Connectorbbdd):
@@ -91,6 +88,8 @@ class Llistadorsabers(Connectorbbdd):
         self.taula = "sabers"
 
     def consulta_no_filtrada(self):
+        """Consulta la taula de sabers de la base de dades, no filtrada
+        :returns: lista de tuples, on cada fila conté l'id i la descripcio del saber corresponent"""
         try:
             self.cursor.execute(f"SELECT sabers_id, sabers_desc FROM {self.taula}")
             resultat_consulta = self.cursor.fetchall()
@@ -100,5 +99,5 @@ class Llistadorsabers(Connectorbbdd):
             raise ValueError(f"Error: {missatge_error}")
 
 
-a = Llistadormateries(1).llistar_materies()
+a = Llistadormateries(1).combinar_info_materies()
 print(a)
