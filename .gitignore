@@ -7,5 +7,6 @@
 /src/dades/Diagrams/
 /src/dades/.dbeaver/
 /src/dades/Diagrams/
-!/src/dades/sabers.csv
-!/src/dades/dades.db.sql
+/src/dades/sabers.csv
+/src/dades/dades.db.sql
+/src/dades/.project
