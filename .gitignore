@@ -4,8 +4,8 @@
 /dades/esquema/*.*
 /src/dades/esquema/
 /.idea/
-/src/dades/Diagrams/
-/src/dades/.dbeaver/
+/src/dades/Diagrams/*.*
+/src/dades/.dbeaver/*.*
 /src/dades/Diagrams/
 /src/dades/sabers.csv
 /src/dades/dades.db.sql
