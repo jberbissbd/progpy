@@ -3,7 +3,7 @@
 /venv/
 /dades/esquema/*.*
 /src/dades/esquema/
-/.idea/*
+/.idea/*.*
 /src/dades/Diagrams/*
 /src/dades/.dbeaver/*
 /src/dades/sabers.csv
