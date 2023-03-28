@@ -111,5 +111,5 @@ class Llistadorsabers(Connectorbbdd):
             raise ValueError(f"Error: {missatge_error}")
 
 
-a = Llistadorsabers(1).consulta_blocs()
+a = Llistadorsabers(1).consulta_no_filtrada()
 print(a)
