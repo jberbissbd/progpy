@@ -3,12 +3,11 @@
 /venv/
 /dades/esquema/*.*
 /src/dades/esquema/
-/.idea/
-/src/dades/Diagrams/*.*
-/src/dades/.dbeaver/*.*
-/src/dades/Diagrams/
+/.idea/*
+/src/dades/Diagrams/*
+/src/dades/.dbeaver/*
 /src/dades/sabers.csv
 /src/dades/dades.db.sql
 /src/dades/.project
-/src/dades/.dbeaver/
+/.idea
 
