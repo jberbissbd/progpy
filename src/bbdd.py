@@ -99,5 +99,7 @@ class Llistadorsabers(Connectorbbdd):
             raise ValueError(f"Error: {missatge_error}")
 
 
-a = Llistadormateries(1).combinar_info_materies()
+
+
+a = Llistadorsabers(1).consulta_no_filtrada()
 print(a)
