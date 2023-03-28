@@ -10,4 +10,4 @@
 /src/dades/dades.db.sql
 /src/dades/.project
 /.idea
-
+/tests/.coverage
