@@ -98,8 +98,18 @@ class Llistadorsabers(Connectorbbdd):
         except sqlite3.OperationalError as missatge_error:
             raise ValueError(f"Error: {missatge_error}")
 
+    def consulta_blocs(self):
+        """Consulta la taula de sabers de la base de dades, filtrada per sabers_id
+        :returns: lista de tuples, on cada fila conté l'id i la descripcio del saber corresponent"""
+        try:
+            self.cursor.execute(f"SELECT sabers_id, sabers_desc, sabers_bloc, bloc_text FROM {self.taula}, "
+                                f"blocs WHERE sabers.sabers_bloc = blocs.bloc_id ORDER BY sabers_id")
+            resultat_consulta = self.cursor.fetchall()
+            self.cursor.close()
+            return resultat_consulta
+        except sqlite3.OperationalError as missatge_error:
+            raise ValueError(f"Error: {missatge_error}")
 
 
-
-a = Llistadorsabers(1).consulta_no_filtrada()
+a = Llistadorsabers(1).consulta_blocs()
 print(a)

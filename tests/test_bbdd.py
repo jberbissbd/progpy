@@ -102,6 +102,17 @@ class TestLlistadorSabers(unittest.TestCase):
         llistat = Llistadorsabers(0)
         self.assertTrue(len(llistat.consulta_no_filtrada())>0)
 
+    def test_llistar_sabers_blocs(self):
+        """Comprova que amb una taula errònia, genera un avís"""
+        llistat = Llistadorsabers(0)
+        a = llistat.consulta_blocs()
+        self.assertTrue(isinstance(a, list))
+
+    def test_llistar_sabers_blocs_longitud_positiva(self):
+        """Comprova que retorna una llista de totes les matèries de la base de dades"""
+        llistat = Llistadorsabers(0)
+        self.assertTrue(len(llistat.consulta_blocs())>0)
+
 
 if __name__ == '__main__':
     unittest.main()
