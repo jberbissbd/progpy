@@ -1,4 +1,3 @@
-import sqlite3
 import unittest
 import sys
 import os
@@ -64,7 +63,7 @@ class TestLlistadormateries(unittest.TestCase):
         llistat = Llistadormateries(0)
         self.assertTrue(isinstance(llistat.llistar_materies_completes(), list))
 
-    def test_llistar_materies_completes(self):
+    def test_llistar_materies_combinades(self):
         """Comprova que retorna una llista de totes les matèries de la base de dades"""
         llistat = Llistadormateries(0)
         self.assertTrue(isinstance(llistat.combinar_info_materies(), list))
@@ -72,7 +71,7 @@ class TestLlistadormateries(unittest.TestCase):
     def test_llistar_materies_completes_llargada(self):
         """Comprova que retorna una llista de totes les matèries de la base de dades"""
         llistat = Llistadormateries(0)
-        self.assertTrue(len(llistat.combinar_info_materies())>0)
+        self.assertTrue(len(llistat.combinar_info_materies()) > 0)
 
     def test_llistar_materies_error_bbdd(self):
         """Comprova que amb una bbdd errònia, genera un avís"""
@@ -94,24 +93,53 @@ class TestLlistadorSabers(unittest.TestCase):
     def test_llistar_sabers(self):
         """Comprova que amb una taula errònia, genera un avís"""
         llistat = Llistadorsabers(0)
-        a = llistat.consulta_no_filtrada()
-        self.assertTrue(isinstance(a, list))
+        retorn = llistat.consulta_no_filtrada()
+        self.assertTrue(isinstance(retorn, list))
+
+    def test_saber_id(self):
+        """Comprova que s'obté una llista amb un saber especificant l'id"""
+        llistat = Llistadorsabers(0)
+        retorn = llistat.consulta_id(1)
+        self.assertTrue(retorn == [(1, 'Resolució de problemes i situacions de la vida quotidiana en els quals s’hagin'
+                                       'de fer recomptes sistemàtics, utilitzant diferents estratègies (diagrames '
+                                       'd’arbre, tècniques de combinatòria, etc.)')])
+
+    def test_saber_descripcio(self):
+        """Comprova que s'obté una llista amb un saber especificant l'id"""
+        llistat = Llistadorsabers(0)
+        retorn = llistat.consulta_descripcio('Resolució de problemes i situacions de la vida quotidiana en els quals '
+                                             's’hagin de fer recomptes sistemàtics, utilitzant diferents estratègies '
+                                             '(diagrames d’arbre, tècniques de combinatòria, etc.)')
+        self.assertTrue(retorn == 1)
 
     def test_llistar_sabers_longitud_positiva(self):
         """Comprova que retorna una llista de totes les matèries de la base de dades"""
         llistat = Llistadorsabers(0)
-        self.assertTrue(len(llistat.consulta_no_filtrada())>0)
+        self.assertTrue(len(llistat.consulta_no_filtrada()) > 0)
 
     def test_llistar_sabers_blocs(self):
         """Comprova que amb una taula errònia, genera un avís"""
         llistat = Llistadorsabers(0)
-        a = llistat.consulta_blocs()
-        self.assertTrue(isinstance(a, list))
+        retorn = llistat.consulta_blocs()
+        self.assertTrue(isinstance(retorn, list))
 
     def test_llistar_sabers_blocs_longitud_positiva(self):
         """Comprova que retorna una llista de totes les matèries de la base de dades"""
         llistat = Llistadorsabers(0)
-        self.assertTrue(len(llistat.consulta_blocs())>0)
+        self.assertTrue(len(llistat.consulta_blocs()) > 0)
+
+    def test_llistar_sabers_blocs_id(self):
+        """Comprova que es retorna una llista especificant l'id dels sabers"""
+        llistat = Llistadorsabers(0)
+        retorn = llistat.consulta_blocs_id(1)
+        self.assertTrue(retorn, [(1, 'Resolució de problemes i situacions de la vida quotidiana en els quals s’hagin de'
+                                     'fer recomptes sistemàtics, utilitzant diferents estratègies (diagrames d’arbre, '
+                                     'tècniques de combinatòria, etc.)', 1, 'Sentit numèric')])
+
+    def test_llistar_sabers_blocs_id_parametres_entrada(self):
+        """Comprova que amb paràmetre d'entrada erroni, genera ValueError"""
+        llistat = Llistadorsabers(0)
+        self.assertRaises(ValueError, llistat.consulta_blocs_id, id_consulta="B")
 
 
 if __name__ == '__main__':

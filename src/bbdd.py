@@ -98,6 +98,31 @@ class Llistadorsabers(Connectorbbdd):
         except sqlite3.OperationalError as missatge_error:
             raise ValueError(f"Error: {missatge_error}")
 
+    def consulta_id(self,id_saber:int):
+        """Consulta la taula de sabers de la base de dades, no filtrada
+        :returns: L'id i la descripcio del saber corresponent al id_saber d'entrada"""
+        try:
+            self.cursor.execute(f"SELECT sabers_id, sabers_desc FROM {self.taula} WHERE sabers_id = {id_saber}")
+            resultat_consulta = self.cursor.fetchall()
+            self.cursor.close()
+            return resultat_consulta
+        except sqlite3.OperationalError as missatge_error:
+            raise ValueError(f"Error: {missatge_error}")
+
+    def consulta_descripcio(self, descripcio:str):
+        """Consulta la taula de sabers de la base de dades, no filtrada
+        :returns: L'id del saber corresponent a la descripcio d'entrada"""
+        try:
+            ordre = f"SELECT sabers_id FROM {self.taula} WHERE sabers_desc = ?"
+            # self.cursor.execute(f"SELECT sabers_id, sabers_desc FROM {self.taula} WHERE sabers_desc = {descripcio}")
+            self.cursor.execute(ordre, (descripcio,))
+            resultat_consulta = self.cursor.fetchone()
+            resultat_consulta = resultat_consulta[0]
+            self.cursor.close()
+            return resultat_consulta
+        except sqlite3.OperationalError as missatge_error:
+            raise ValueError(f"Error: {missatge_error}")
+
     def consulta_blocs(self):
         """Consulta la taula de sabers de la base de dades, filtrada per sabers_id
         :returns: lista de tuples, on cada fila conté l'id i la descripcio del saber corresponent"""
@@ -110,6 +135,19 @@ class Llistadorsabers(Connectorbbdd):
         except sqlite3.OperationalError as missatge_error:
             raise ValueError(f"Error: {missatge_error}")
 
+    def consulta_blocs_id(self, id_consulta: int):
+        """Consulta la taula de sabers de la base de dades, filtrada per sabers_id
+        :parameter id de la consulta, integer
+        :returns: lista de tuples, on cada fila conté l'id i la descripcio del saber corresponent"""
+        id_consulta = int(id_consulta)
+        try:
+            self.cursor.execute(f"SELECT sabers_id, sabers_desc, sabers_bloc, bloc_text FROM {self.taula}, "
+                                f"blocs WHERE sabers.sabers_bloc = blocs.bloc_id AND sabers.sabers_id = {id_consulta}")
+            resultat_consulta = self.cursor.fetchall()
+            self.cursor.close()
+            return resultat_consulta
+        except sqlite3.OperationalError as missatge_error:
+            raise ValueError(f"Error: {missatge_error}")
 
-a = Llistadorsabers(1).consulta_no_filtrada()
-print(a)
+
+a = Llistadorsabers(1).consulta_blocs_id(1)
