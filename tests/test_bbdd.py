@@ -9,6 +9,7 @@ directori = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(os.path.join(directori, "src"))
 
 from moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Connectorbbdd
+from moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri, competencia_missatge
 
 
 class TestLector(TestCase):
@@ -94,53 +95,17 @@ class TestLlistadorSabers(TestCase):
         self.assertRaises(Warning, msg="La classe Llistador materies no provoca un warning quan la taula no és "
                                        "correcte")
 
-    def test_llistar_sabers(self):
+    def test_segons_bloc_materia(self):
+        llistat = Lectorsabers(0)
+        retorn = llistat.segons_bloc_materia(1, 1)
+        assert isinstance(retorn, list)
+
+    def test_format_blocs_materials(self):
         """Comprova que amb una taula errònia, genera un avís"""
         llistat = Lectorsabers(0)
-        retorn = llistat.consulta_no_filtrada()
-        self.assertTrue(isinstance(retorn, list))
-
-    def test_saber_id(self):
-        """Comprova que s'obté una llista amb un saber especificant l'id"""
-        llistat = Lectorsabers(0)
-        retorn = llistat.consulta_id(1)
-        self.assertTrue(retorn == [(1, 'Resolució de problemes i situacions de la vida quotidiana en els quals s’hagin'
-                                       ' de fer recomptes sistemàtics, utilitzant diferents estratègies (diagrames '
-                                       'd’arbre, tècniques de combinatòria, etc.)')])
-
-    def test_saber_descripcio(self):
-        """Comprova que s'obté una llista amb un saber especificant l'id"""
-        llistat = Lectorsabers(0)
-        retorn = llistat.consulta_descripcio('Resolució de problemes i situacions de la vida quotidiana en els quals '
-                                             's’hagin de fer recomptes sistemàtics, utilitzant diferents estratègies '
-                                             '(diagrames d’arbre, tècniques de combinatòria, etc.)')
-        self.assertTrue(retorn == 1)
-
-    def test_llistar_sabers_longitud_positiva(self):
-        """Comprova que retorna una llista de totes les matèries de la base de dades"""
-        llistat = Lectorsabers(0)
-        self.assertTrue(len(llistat.consulta_no_filtrada()) > 0)
-
-    def test_llistar_sabers_blocs(self):
-        """Comprova que amb una taula errònia, genera un avís"""
-        llistat = Lectorsabers(0)
-        retorn = llistat.consulta_blocs()
-        self.assertTrue(isinstance(retorn, list))
-
-    def test_llistar_sabers_blocs_longitud_positiva(self):
-        """Comprova que retorna una llista de totes les matèries de la base de dades"""
-        llistat = Lectorsabers(0)
-        self.assertTrue(len(llistat.consulta_blocs()) > 0)
-
-    def test_llistar_sabers_blocs_id(self):
-        """Comprova que es retorna una llista especificant l'id dels sabers"""
-        llistat = Lectorsabers(0)
-        retorn = llistat.consulta_bloc_id(1)
-        self.assertTrue(retorn, [(1, 'Resolució de problemes i situacions de la vida quotidiana en els quals s’hagin de'
-                                     ' fer recomptes sistemàtics, utilitzant diferents estratègies (diagrames d’arbre, '
-                                     'tècniques de combinatòria, etc.)', 1, 'Sentit numèric')])
-
-
+        retorn = llistat.segons_bloc_materia(1, 1)
+        for element in retorn:
+            assert isinstance(element, saber_missatgeria)
 
 
 if __name__ == '__main__':

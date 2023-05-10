@@ -95,7 +95,7 @@ class Lectorsabers(Connectorbbdd):
         """Consulta la taula de sabers de la base de dades, filtrada per bloc i materia
         :returns: lista de tuples, on cada fila conté l'id i la descripcio del saber corresponent"""
         try:
-            ordre = "SELECT DISTINCT sabers_id, sabers_desc FROM {table}, mat_sabers WHERE sabers.sabers_bloc = ? AND \
+            ordre = f"SELECT DISTINCT sabers_id, sabers_desc FROM {self.taula}, mat_sabers WHERE sabers.sabers_bloc = ? AND \
                 mat_sabers.matsaber_mat = ? AND mat_sabers.matsaber_id = sabers.sabers_id ORDER BY sabers.sabers_id ASC"
             self.cursor.execute(ordre, (bloc_id, materia_id))
             resultat_consulta = self.cursor.fetchall()
@@ -107,7 +107,7 @@ class Lectorsabers(Connectorbbdd):
                 saber[0], saber[1]) for saber in sabers_llista]
             return sabers_missatge
         except sqlite3.OperationalError as missatge_error:
-            raise ValueError(f"Error: {missatge_error}") from missatge_error
+            raise ValueError("Error:") from missatge_error
 
 
 class Lectorsblocs(Connectorbbdd):
