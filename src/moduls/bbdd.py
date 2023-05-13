@@ -53,23 +53,33 @@ class Lectormateries(Connectorbbdd):
         except sqlite3.OperationalError as error:
             raise Warning("Error al obtenir la llista de materies:") from error
 
-    def llistar_materies_completes(self):
+
+
+class LectorMateriesCompletes(Connectorbbdd):
+    """Classe per a obtenir una llista de totes les matèries de la base de dades
+    :parameter mode: 0 per a testing i 1 per a ús normal"""
+
+    def __init__(self, mode: int):
+        super().__init__(mode)
+        self.mode = mode
+        self.taula = "materia_completa"
+
+    def obtenir_materies(self):
         """Funció que retorna una llista de totes les materies completes (materia + curs) de la base de dades
         :returns: lista de tuples"""
         try:
-            self.taula = "materia_completa"
             self.cursor.execute(f"SELECT * FROM {self.taula}")
             resultat = self.cursor.fetchall()
             return resultat
-        except Exception as tipus_error:
-            raise Warning(
-                "Error al obtenir la llista de materies completes:") from tipus_error
+        except sqlite3.OperationalError as error:
+            raise Warning("Error al obtenir la llista de materies:") from error
 
     def combinar_info_materies(self):
+        lectura_materies_simples = Lectormateries(self.mode).llistar_materies()
         """Retorna una llista amb totes les matèries de la base de dades combinada amb la informació de les taules
         relacionades
         :returns: lista de tuples, ValueError si no s'ha pogut obtenir la llista"""
-        if self.llistar_materies() is not None and self.llistar_materies_completes() is not None:
+        if lectura_materies_simples is not None and self.obtenir_materies() is not None:
             try:
                 self.cursor.execute("SELECT matcomp_id, materia_nom,materia_id, nivell_nom, etapa_desc FROM "
                                     "materia, materia_completa, curs, nivell, etapa WHERE matcomp_mat = materia_id AND"
@@ -88,14 +98,16 @@ class Lectorsabers(Connectorbbdd):
 
     def __init__(self, mode: int):
         super().__init__(mode)
-
         self.taula = "sabers"
 
     def segons_bloc_materia(self, bloc_id: int, materia_id: int):
         """Consulta la taula de sabers de la base de dades, filtrada per bloc i materia
         :returns: lista de tuples, on cada fila conté l'id i la descripcio del saber corresponent"""
         try:
-            ordre = f"SELECT DISTINCT sabers_id, sabers_desc FROM {self.taula}, mat_sabers WHERE sabers.sabers_bloc = ? AND \
+            ordre = f"SELECT DISTINCT sabers_id, sabers_desc FROM {self.taula}, mat_sabers WHERE sabers.sabers_bloc = " \
+                    f"" \
+                    f"" \
+                    f"? AND \
                 mat_sabers.matsaber_mat = ? AND mat_sabers.matsaber_id = sabers.sabers_id ORDER BY sabers.sabers_id ASC"
             self.cursor.execute(ordre, (bloc_id, materia_id))
             resultat_consulta = self.cursor.fetchall()
@@ -111,8 +123,8 @@ class Lectorsabers(Connectorbbdd):
 
 
 class Lectorsblocs(Connectorbbdd):
-
     """Consulta la taula de blocs de la base de dades"""
+
     def __init__(self, mode: int):
         """
         Initializes a new instance of the class.
@@ -138,7 +150,7 @@ class Lectorsblocs(Connectorbbdd):
             self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
             self.cursor.close()
-            if resultat_consulta is None:
+            if resultat_consulta is None or len(resultat_consulta) == 0:
                 raise Warning("Matèria sense blocs assignats")
             dades_retorn = list(resultat_consulta)
             dades_retorn = sorted(dades_retorn, key=lambda x: x[0])
@@ -204,7 +216,7 @@ class Lectorcriteris(Connectorbbdd):
         Warning si no hi han criteris assignades
         """
         self.materia_id = materia_id
-        if not isinstance(self.materia_id, int):
+        if not isinstance(self.materia_id, int) or not isinstance(competencia_id, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
         try:
             ordre = f"SELECT DISTINCT critaval.critaval_id, critaval.critaval_num, critaval.critaval_desc " \
@@ -265,4 +277,3 @@ class InformadorMateria:
         except ValueError as error:
             raise ValueError(
                 "Error: No s'ha pogut obtenir els criteris de sabers.") from error
-
