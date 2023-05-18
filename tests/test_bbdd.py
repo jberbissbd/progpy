@@ -1,17 +1,15 @@
-import sqlite3
-
-import pytest
 import os
 import sys
 from unittest import TestCase
+
+import pytest
 
 directori = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(os.path.join(directori, "src"))
 
 from moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Connectorbbdd, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies
-from moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge, competencia_missatge, \
-    criteri_missatge
+from moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
 
 
 class TestLector(TestCase):
@@ -175,12 +173,14 @@ class TestLlistadorSabers(TestCase):
 
 class TestLlistadorsBlocs(TestCase):
     """Test de Lllistador de blocs"""
+
     def test_parametres_inici(self):
         """Comprova els parametres d'entrada"""
         lector_bloc = Lectorsblocs(0)
         assert lector_bloc.id_materia is None
         assert lector_bloc.taula == "blocs"
 
+    # noinspection PyTypeChecker
     def test_obtenir_bloc_format_entrada(self):
         """Comprova que el format de retorn es una llista"""
         lector_bloc = Lectorsblocs(0)
@@ -220,6 +220,7 @@ class TestLlistadorsBlocs(TestCase):
             lector.obtenir_blocs(1)
 
 
+# noinspection PyTypeChecker
 class TestLectorCompetencies(TestCase):
     """Test sobre la classe de lector de competencies"""
 
@@ -253,6 +254,7 @@ class TestLectorcriteris(TestCase):
         lector = Lectorcriteris(1)
         assert lector.taula == "critaval"
 
+    # noinspection PyTypeChecker
     def test_format_entrada(self):
         """Comprova que es genera un Warning si els parametres d'entrada no son correctes"""
         lector = Lectorcriteris(0)
