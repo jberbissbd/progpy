@@ -1,7 +1,7 @@
 import os.path
 import sqlite3
 from os.path import dirname
-from moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri, competencia_missatge
+from moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge, competencia_missatge
 
 encoding = 'utf-8'
 
@@ -54,7 +54,6 @@ class Lectormateries(Connectorbbdd):
             raise Warning("Error al obtenir la llista de materies:") from error
 
 
-
 class LectorMateriesCompletes(Connectorbbdd):
     """Classe per a obtenir una llista de totes les matèries de la base de dades
     :parameter mode: 0 per a testing i 1 per a ús normal"""
@@ -79,18 +78,16 @@ class LectorMateriesCompletes(Connectorbbdd):
         """Retorna una llista amb totes les matèries de la base de dades combinada amb la informació de les taules
         relacionades
         :returns: lista de tuples, ValueError si no s'ha pogut obtenir la llista"""
-        if lectura_materies_simples is not None and self.obtenir_materies() is not None:
-            try:
-                self.cursor.execute("SELECT matcomp_id, materia_nom,materia_id, nivell_nom, etapa_desc FROM "
-                                    "materia, materia_completa, curs, nivell, etapa WHERE matcomp_mat = materia_id AND"
-                                    " matcomp_curs = curs_id AND curs_nivell = nivell_id AND nivell_etapa = etapa_id")
-                resultat_consulta = self.cursor.fetchall()
-                self.cursor.close()
-                if resultat_consulta is not None:
-                    return resultat_consulta
-            except sqlite3.OperationalError as error_basedades:
-                raise ValueError(
-                    "Error: No s'ha pogut obtenir la llista de materies.") from error_basedades
+        try:
+            self.cursor.execute(f"SELECT matcomp_id, materia_nom,materia_id, nivell_nom, etapa_desc FROM "
+                                f"materia, {self.taula}, curs, nivell, etapa WHERE matcomp_mat = materia_id AND"
+                                " matcomp_curs = curs_id AND curs_nivell = nivell_id AND nivell_etapa = etapa_id")
+            resultat_consulta = self.cursor.fetchall()
+            self.cursor.close()
+            if resultat_consulta is not None:
+                return resultat_consulta
+        except sqlite3.OperationalError:
+            raise ValueError("Error: No s'ha pogut obtenir la llista de materies.")
 
 
 class Lectorsabers(Connectorbbdd):
@@ -111,12 +108,13 @@ class Lectorsabers(Connectorbbdd):
                 mat_sabers.matsaber_mat = ? AND mat_sabers.matsaber_id = sabers.sabers_id ORDER BY sabers.sabers_id ASC"
             self.cursor.execute(ordre, (bloc_id, materia_id))
             resultat_consulta = self.cursor.fetchall()
+            if len(resultat_consulta) == 0:
+                raise Warning("Error: No s'ha pogut obtenir la llista de sabers.")
             self.cursor.close()
             # Formatem com a llista: [(id_saber, descripcio_saber), ...]
             sabers_llista = list(resultat_consulta)
             # Formatem com a missatge:
-            sabers_missatge = [saber_missatgeria(
-                saber[0], saber[1]) for saber in sabers_llista]
+            sabers_missatge = [saber_missatgeria(saber[0], saber[1]) for saber in sabers_llista]
             return sabers_missatge
         except sqlite3.OperationalError as missatge_error:
             raise ValueError("Error:") from missatge_error
@@ -165,6 +163,10 @@ class Lectorsblocs(Connectorbbdd):
 class Lectorcompetencies(Connectorbbdd):
     """Consulta la taula de competencies de la base de dades"""
 
+    def __init__(self, mode: int):
+        super().__init__(mode)
+        self.taula = "competencies"
+
     def obtenir_competencies_materia(self, materia_id: int):
         """Consulta la taula de competencies de la base de dades, filtrada per materia relacionada
         Parameters:
@@ -175,25 +177,20 @@ class Lectorcompetencies(Connectorbbdd):
         ValueError si no s'ha pogut obtenir la llista de competencies de la materia
         Warning si no hi han competencies assignades
         """
-        self.materia_id = materia_id
-        if not isinstance(self.materia_id, int):
+        materia = materia_id
+        if not isinstance(materia, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
         try:
-            ordre = f"SELECT DISTINCT competencies.competencia_id, competencies.competencia_num, " \
-                    f"competencies.competencia_desc FROM competencies, compmat WHERE compmat.compmat_materia =" \
-                    f" {self.materia_id} " \
+            ordre = f"SELECT DISTINCT {self.taula}.competencia_id, {self.taula}.competencia_num, " \
+                    f"{self.taula}.competencia_desc FROM competencies, compmat WHERE compmat.compmat_materia =" \
+                    f" {materia} " \
                     f"AND compmat.compmat_competencia = competencies.competencia_id ORDER BY competencia_num ASC"
             self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
             self.cursor.close()
             if resultat_consulta is None:
                 raise Warning("Matèria sense competencies assignats")
-            dades_brut = list(resultat_consulta)
-            dades_retorn = []
-            for element in dades_brut:
-                element = list(element)
-                element.append([])
-                dades_retorn.append(element)
+            dades_retorn = [item for item in resultat_consulta]
             return dades_retorn
         except sqlite3.OperationalError as missatge_error:
             raise ValueError(f"Error: {missatge_error}") from missatge_error
@@ -230,7 +227,7 @@ class Lectorcriteris(Connectorbbdd):
             if resultat_consulta is None:
                 raise Warning("Matèria sense criteris assignats")
             dades_brut = list(resultat_consulta)
-            dades_retorn = [criteri(element[0], element[1], element[2])
+            dades_retorn = [criteri_missatge(element[0], element[1], element[2])
                             for element in dades_brut]
             return dades_retorn
         except sqlite3.OperationalError as missatge_error:

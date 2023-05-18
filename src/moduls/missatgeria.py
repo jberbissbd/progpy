@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(repr=True)
-class criteri:
+class criteri_missatge:
     id: int
     num: int
     descripcio: str
