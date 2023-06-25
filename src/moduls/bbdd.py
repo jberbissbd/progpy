@@ -79,15 +79,16 @@ class LectorMateriesCompletes(Connectorbbdd):
         relacionades
         :returns: lista de tuples, ValueError si no s'ha pogut obtenir la llista"""
         try:
-            self.cursor.execute(f"SELECT matcomp_id, materia_nom,materia_id, nivell_nom, etapa_desc FROM "
-                                f"materia, {self.taula}, curs, nivell, etapa WHERE matcomp_mat = materia_id AND"
-                                " matcomp_curs = curs_id AND curs_nivell = nivell_id AND nivell_etapa = etapa_id")
+            ordre = f"SELECT matcomp_id, materia_nom,materia_id, nivell_nom, etapa_desc FROM materia, {self.taula}, " \
+                    f"curs, nivell, etapa WHERE matcomp_mat = materia_id AND matcomp_curs = curs_id AND curs_nivell = " \
+                    f"nivell_id AND nivell_etapa = etapa_id"
+            self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
             self.cursor.close()
             if resultat_consulta is not None:
                 return resultat_consulta
         except sqlite3.OperationalError:
-            raise ValueError("Error: No s'ha pogut obtenir la llista de materies.")
+            raise ValueError("Error: nom de taula incorrecte o taula no existent")
 
 
 class Lectorsabers(Connectorbbdd):
@@ -190,7 +191,7 @@ class Lectorcompetencies(Connectorbbdd):
             self.cursor.close()
             if resultat_consulta is None:
                 raise Warning("Matèria sense competencies assignats")
-            dades_retorn = [item for item in resultat_consulta]
+            dades_retorn = [list(item) for item in resultat_consulta]
             return dades_retorn
         except sqlite3.OperationalError as missatge_error:
             raise ValueError(f"Error: {missatge_error}") from missatge_error
@@ -212,24 +213,19 @@ class Lectorcriteris(Connectorbbdd):
         ValueError si no s'ha pogut obtenir la llista de criteris de la materia
         Warning si no hi han criteris assignades
         """
-        self.materia_id = materia_id
-        if not isinstance(self.materia_id, int) or not isinstance(competencia_id, int):
+        if not isinstance(materia_id, int) or not isinstance(competencia_id, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
         try:
             ordre = f"SELECT DISTINCT critaval.critaval_id, critaval.critaval_num, critaval.critaval_desc " \
                     f"FROM {self.taula}, matcomp_aval WHERE critaval.critaval_comp = {competencia_id} " \
                     f"AND matcomp_aval.matcompaval_mat = {materia_id} " \
-                    f"AND matcomp_aval.matcompaval_crit = critaval.critaval_id" \
-                # f"ORDER BY critaval.critaval_id ASC"
+                    f"AND matcomp_aval.matcompaval_crit = critaval.critaval_id"
             self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
             self.cursor.close()
             if resultat_consulta is None:
                 raise Warning("Matèria sense criteris assignats")
-            dades_brut = list(resultat_consulta)
-            dades_retorn = [criteri_missatge(element[0], element[1], element[2])
-                            for element in dades_brut]
-            return dades_retorn
+            return [criteri_missatge(element[0], element[1], element[2]) for element in list(resultat_consulta)]
         except sqlite3.OperationalError as missatge_error:
             raise ValueError(f"Error: {missatge_error}") from missatge_error
 
@@ -247,30 +243,36 @@ class InformadorMateria:
             raise Warning("Consulta s'ha de fer amb un nombre")
         try:
             # Obtenim els blocs de sabers:
-            blocs_materia = Lectorsblocs(
-                self.mode).obtenir_blocs(self.id_materia)
+            blocs_materia = Lectorsblocs(self.mode).obtenir_blocs(self.id_materia)
             # Els creuem amb els sabers:
             for element in blocs_materia:
                 element.sabers_associats = Lectorsabers(
                     self.mode).segons_bloc_materia(element.id, self.id_materia)
             return blocs_materia
-        except ValueError as error:
+        except sqlite3.OperationalError as error:
             raise ValueError("Error: No s'ha pogut obtenir els blocs de sabers.") from error
 
     def obtenir_criteris_materia(self, materia_id: int):
+        """
+        Given a `materia_id` integer, obtains the competencies and criteria related to that subject.
+        Raises a `Warning` if the parameter is not an integer.
+        Returns a list of formatted competencies including its id, title, description and related criteria.
+        Raises a `ValueError` if the criteria could not be obtained due to an `OperationalError`.
+        """
         self.materia_id = materia_id
         if not isinstance(self.materia_id, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
         try:
             # Obtenim les competencies de la materia:
-            competencies_materia = Lectorcompetencies(self.mode).obtenir_competencies_materia(materia_id)
+            competencies_materia = list(Lectorcompetencies(self.mode).obtenir_competencies_materia(materia_id))
+            if len(competencies_materia) == 0:
+                raise ValueError("Matèria sense competencies assignades")
             # Els creuem amb els criteris:
             for element in competencies_materia:
-                element[3] = Lectorcriteris(
-                    self.mode).obtenir_criteris_materia(materia_id, element[0])
+                element.append(Lectorcriteris(self.mode).obtenir_criteris_materia(materia_id, element[0]))
             competencies_format = [competencia_missatge(element[0], element[1], element[2], element[3]) for element in
                                    competencies_materia]
             return competencies_format
-        except ValueError as error:
-            raise ValueError(
-                "Error: No s'ha pogut obtenir els criteris de sabers.") from error
+        except sqlite3.OperationalError as error:
+            print(error)
+            raise ValueError("Error: No s'ha pogut obtenir els criteris de sabers.") from error

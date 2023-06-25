@@ -1,4 +1,5 @@
 import os
+import sqlite3
 import sys
 from unittest import TestCase
 
@@ -8,7 +9,7 @@ directori = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(os.path.join(directori, "src"))
 
 from moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Connectorbbdd, Lectorsblocs, Lectorcriteris, \
-    LectorMateriesCompletes, Lectorcompetencies
+    LectorMateriesCompletes, Lectorcompetencies, InformadorMateria
 from moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
 
 
@@ -251,7 +252,7 @@ class TestLectorcriteris(TestCase):
 
     def test_parametres_arrencada(self):
         """Comprova els parametres d'entrada"""
-        lector = Lectorcriteris(1)
+        lector = Lectorcriteris(0)
         assert lector.taula == "critaval"
 
     # noinspection PyTypeChecker
@@ -261,18 +262,53 @@ class TestLectorcriteris(TestCase):
         with pytest.raises(Warning):
             lector.obtenir_criteris_materia("a", "a")
 
-    def test_obtencio_resultats(self):
+    def test_formats_resultats(self):
         """Comprovem el format de retorn"""
         lector = Lectorcriteris(0)
         resultat = lector.obtenir_criteris_materia(1, 1)
         assert isinstance(resultat, list)
-
-    def test_formats_resultats(self):
-        """Comprovem el format de retorn d'una part individual."""
-        lector = Lectorcriteris(0)
-        resultat = lector.obtenir_criteris_materia(1, 1)
         assert isinstance(resultat[0], criteri_missatge)
 
+    def test_error_bbdd(self):
+        """Comprova que genera un ValueError si la taula no existeix"""
+        lector = Lectorcriteris(0)
+        lector.ruta_arxiu_bbdd = "/home/jordi/Documents/Projectes/Progpy/tests/dummy.db"
+        lector.taula = "comp"
+        with pytest.raises(ValueError):
+            lector.obtenir_criteris_materia(1, 1)
+
+
+class TestInformadorMateria(TestCase):
+
+    def test_creador_materia(self):
+        """Comprova que el format de retorn es una llista"""
+        lector = InformadorMateria(0)
+        assert lector.mode == 0
+        assert lector.id_materia is None
+
+    def test_blocssabers(self):
+        """Comprova que es genera un Warning si no s'introdueix un nombre de materia"""
+        lector = InformadorMateria(0)
+        with pytest.raises(Warning):
+            lector.obtenir_blocssabers("a")
+
+    def test_obtenir_blocssabers_formats(self):
+        # Happy path test for obtenir_blocssabers
+        informador = InformadorMateria(1)
+        blocs = informador.obtenir_blocssabers(1)
+        assert isinstance(blocs, list)
+        assert all(isinstance(bloc, blocs_missatge) for bloc in blocs)
+        assert all(isinstance(saber, saber_missatgeria) for bloc in blocs for saber in bloc.sabers_associats)
+
+    def test_obtenir_criteris_tipologia_input(self):
+        informador = InformadorMateria(1)
+        with pytest.raises(Warning):
+            informador.obtenir_criteris_materia("a")
+
+    def test_obtenir_criteris_materia_erronia(self):
+        informador = InformadorMateria(1)
+        with pytest.raises(ValueError):
+            informador.obtenir_criteris_materia(9999)
 
 if __name__ == '__main__':
     pytest.main()
