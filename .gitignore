@@ -11,3 +11,5 @@
 /src/dades/.project
 /.idea
 /.vscode/
+src/moduls/__pycache__
+tests/__pycache__
