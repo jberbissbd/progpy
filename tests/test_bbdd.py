@@ -6,7 +6,6 @@ from unittest import TestCase
 import pytest
 
 
-print(sys.path)
 from src.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Connectorbbdd, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies, InformadorMateria
 from src.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
