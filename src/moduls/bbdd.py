@@ -1,11 +1,11 @@
 import os.path
 import sqlite3
 from os.path import dirname
-from moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge, competencia_missatge
+from missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge, competencia_missatge
 
 encoding = 'utf-8'
 
-
+"""Module per a connectar amb la base de dades segons la ruta proporcionada per la classe Lectorbbdd"""
 class Lectorbbdd:
     """Classe per a determinar la ruta a utilitzar de la base de dades
     :parameter mode: 0 per a testing, 1 per a ús normal."""

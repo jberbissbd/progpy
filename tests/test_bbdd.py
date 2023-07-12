@@ -1,16 +1,18 @@
 import os
 import sqlite3
 import sys
+from os.path import dirname,join
 from unittest import TestCase
-
 import pytest
 
-directori = os.path.dirname(os.path.dirname(__file__))
-sys.path.append(os.path.join(directori, "src"))
 
-from moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Connectorbbdd, Lectorsblocs, Lectorcriteris, \
+print(sys.path)
+from src.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Connectorbbdd, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies, InformadorMateria
-from moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
+from src.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
+
+
+
 
 
 class TestLector(TestCase):
@@ -186,13 +188,13 @@ class TestLlistadorsBlocs(TestCase):
         """Comprova que el format de retorn es una llista"""
         lector_bloc = Lectorsblocs(0)
         with pytest.raises(Warning):
-            lector_bloc.obtenir_blocs("a")
+            lector_bloc.obtenir_blocs("a")  # type: ignore
 
     def test_obtenir_blocs_materia(self):
         """Comprova que el format de retorn es una llista"""
         lbloc = Lectorsblocs(0)
         retorn = lbloc.obtenir_blocs(1)
-        assert isinstance(retorn, list)
+        assert type(retorn) == list
 
     def test_obtenir_blocs_nonexistent_id(self):
         """Comprova que genera un Warning amb un bloc que sabem que es incorrecte"""
@@ -207,7 +209,7 @@ class TestLlistadorsBlocs(TestCase):
         assert isinstance(resultat, list)
 
     def test_obtenir_blocs_format_element(self):
-        """Comprova que el format dels elements de la llista te el format bloc misstage"""
+        """Comprova que el format dels elements de la llista te el format bloc missatge"""
         lectors_blocs = Lectorsblocs(0)
         resultat = lectors_blocs.obtenir_blocs(1)
         assert isinstance(resultat[0], blocs_missatge)
@@ -290,25 +292,28 @@ class TestInformadorMateria(TestCase):
         """Comprova que es genera un Warning si no s'introdueix un nombre de materia"""
         lector = InformadorMateria(0)
         with pytest.raises(Warning):
-            lector.obtenir_blocssabers("a")
+            lector.obtenir_blocssabers("a") # type: ignore
 
     def test_obtenir_blocssabers_formats(self):
         # Happy path test for obtenir_blocssabers
         informador = InformadorMateria(1)
         blocs = informador.obtenir_blocssabers(1)
-        assert isinstance(blocs, list)
-        assert all(isinstance(bloc, blocs_missatge) for bloc in blocs)
-        assert all(isinstance(saber, saber_missatgeria) for bloc in blocs for saber in bloc.sabers_associats)
+        assert isinstance(blocs,list) == True
+        assert all(isinstance(item, blocs_missatge) for item in blocs)
+        assert all(isinstance(saber, saber_missatgeria)
+                   for bloc in blocs for saber in bloc.sabers_associats)
 
     def test_obtenir_criteris_tipologia_input(self):
         informador = InformadorMateria(1)
         with pytest.raises(Warning):
-            informador.obtenir_criteris_materia("a")
+            informador.obtenir_criteris_materia("a") # type: ignore
 
     def test_obtenir_criteris_materia_erronia(self):
         informador = InformadorMateria(1)
         with pytest.raises(ValueError):
             informador.obtenir_criteris_materia(9999)
 
+
 if __name__ == '__main__':
+    sys.path.append(os.path.abspath(join(dirname((dirname(__file__))),"src/moduls")))
     pytest.main()

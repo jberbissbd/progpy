@@ -1,5 +1,16 @@
-from moduls.bbdd import InformadorMateria, Lectorsabers,Lectormateries, Lectorsblocs, Lectorcriteris, LectorMateriesCompletes, Lectorcompetencies
+# from moduls import bbdd as base
+import sys
+# import os
+from moduls import bbdd 
+from bbdd import LectorMateriesCompletes
+
+# sys.path.append("../")
+print(sys.path)
+
 encoding = 'utf-8'
+
+
+
 
 encoding = 'utf-8'
 

@@ -4,5 +4,12 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "sonarlint.connectedMode.project": {
+        "connectionId": "VSCode - Progpy",
+        "projectKey": "jberbissbd_progpy"
+    },
+    "python.analysis.extraPaths": [
+        "./src/moduls"
+    ]
 }
