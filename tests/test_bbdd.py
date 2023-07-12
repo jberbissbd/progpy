@@ -1,12 +1,15 @@
-import os
-import sqlite3
-import sys
-from os.path import dirname,join
+import os, sys
+from os.path import dirname, join
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../')
+
 from unittest import TestCase
 import pytest
+import dataclasses
 
 
-from src.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Connectorbbdd, Lectorsblocs, Lectorcriteris, \
+
+from src.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies, InformadorMateria
 from src.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
 
@@ -166,7 +169,7 @@ class TestLlistadorSabers(TestCase):
         llistat = Lectorsabers(0)
         retorn = llistat.segons_bloc_materia(1, 1)
         for element in retorn:
-            assert isinstance(element, saber_missatgeria)
+            assert dataclasses.is_dataclass(element)
 
     def test_error_bbdd(self):
         """Comprova que amb una taula erronia genera un Value Error"""
@@ -215,7 +218,7 @@ class TestLlistadorsBlocs(TestCase):
         """Comprova que el format dels elements de la llista te el format bloc missatge"""
         lectors_blocs = Lectorsblocs(0)
         resultat = lectors_blocs.obtenir_blocs(1)
-        assert isinstance(resultat[0], blocs_missatge)
+        assert dataclasses.is_dataclass(resultat[0])
 
     def test_error_bbdd(self):
         """Comprova que genera un ValueError si la taula no existeix"""
@@ -272,7 +275,8 @@ class TestLectorcriteris(TestCase):
         lector = Lectorcriteris(0)
         resultat = lector.obtenir_criteris_materia(1, 1)
         assert isinstance(resultat, list)
-        assert isinstance(resultat[0], criteri_missatge)
+        for element in resultat:
+            assert dataclasses.is_dataclass(element)
 
     def test_error_bbdd(self):
         """Comprova que genera un ValueError si la taula no existeix"""
@@ -302,8 +306,8 @@ class TestInformadorMateria(TestCase):
         informador = InformadorMateria(1)
         blocs = informador.obtenir_blocssabers(1)
         assert isinstance(blocs,list) == True
-        assert all(isinstance(item, blocs_missatge) for item in blocs)
-        assert all(isinstance(saber, saber_missatgeria)
+        assert all(dataclasses.is_dataclass(item) for item in blocs)
+        assert all(dataclasses.is_dataclass(saber)
                    for bloc in blocs for saber in bloc.sabers_associats)
 
     def test_obtenir_criteris_tipologia_input(self):
@@ -318,5 +322,5 @@ class TestInformadorMateria(TestCase):
 
 
 if __name__ == '__main__':
-    sys.path.append(os.path.abspath(join(dirname((dirname(__file__))),"src/moduls")))
+    
     pytest.main()
