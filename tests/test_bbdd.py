@@ -42,7 +42,7 @@ class TestConnector(TestCase):
     def test_mode_testing(self):
         """Comprova la ruta de l'arxiu de base de dades en el mode testeig"""
         lector = Lectorbbdd(0)
-        arrel_tests = os.path.join(os.path.abspath(dirname(__file__)),"tests/test.db")
+        arrel_tests = os.path.join(os.path.abspath(dirname(__file__)),"test.db")
         self.assertEqual(lector.ruta_arxiu_bbdd, arrel_tests,
                          msg="La ruta de l'arxiu en mode testeig no es correcte")
 
