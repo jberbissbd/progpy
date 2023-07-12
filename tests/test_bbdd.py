@@ -20,13 +20,15 @@ class TestLector(TestCase):
     def test_mode_testing(self):
         """Comprova la ruta de l'arxiu de base de dades en el mode testeig"""
         lector = Lectorbbdd(0)
-        self.assertEqual(lector.ruta_arxiu_bbdd, "/home/jordi/Documents/Projectes/Progpy/tests/test.db",
+        arrel_tests = os.path.join(os.path.abspath(dirname(__file__)),"tests/test.db")
+        self.assertEqual(lector.ruta_arxiu_bbdd, arrel_tests,
                          msg="La ruta de l'arxiu en mode testeig no es correcte")
 
     def test_mode_produccio(self):
         """Comprova la ruta de l'arxiu de base de dades en el mode de producció"""
         lector = Lectorbbdd(1)
-        self.assertEqual(lector.ruta_arxiu_bbdd, "/home/jordi/Documents/Projectes/Progpy/src/dades/dades.db",
+        arrel_produccio = os.path.join(os.path.abspath(dirname(__file__)), "src/dades/dades.db")
+        self.assertEqual(lector.ruta_arxiu_bbdd, arrel_produccio,
                          msg="La ruta de l'arxiu en mode producció no es correcte")
 
     def test_valors_invalids(self):
@@ -38,16 +40,19 @@ class TestConnector(TestCase):
     """Comprova la classe Connectorbbdd"""
 
     def test_mode_testing(self):
-        """Comprova la connexió a la base de dades en el mode de test"""
-        connector = Connectorbbdd(0)
-        self.assertEqual(connector.ruta_arxiu_bbdd, "/home/jordi/Documents/Projectes/Progpy/tests/test.db",
+        """Comprova la ruta de l'arxiu de base de dades en el mode testeig"""
+        lector = Lectorbbdd(0)
+        arrel_tests = os.path.join(os.path.abspath(dirname(__file__)),"tests/test.db")
+        self.assertEqual(lector.ruta_arxiu_bbdd, arrel_tests,
                          msg="La ruta de l'arxiu en mode testeig no es correcte")
 
     def test_mode_produccio(self):
-        """Comprova la connexió a la base de dades en el mode de producció"""
-        connector = Connectorbbdd(1)
-        self.assertEqual(connector.ruta_arxiu_bbdd, "/home/jordi/Documents/Projectes/Progpy/src/dades/dades.db",
+        """Comprova la ruta de l'arxiu de base de dades en el mode de producció"""
+        lector = Lectorbbdd(1)
+        arrel_produccio = os.path.join(os.path.abspath(dirname(__file__)), "src/dades/dades.db")
+        self.assertEqual(lector.ruta_arxiu_bbdd, arrel_produccio,
                          msg="La ruta de l'arxiu en mode producció no es correcte")
+
 
 
 class TestLlistadormateries(TestCase):
@@ -261,7 +266,7 @@ class TestLectorcriteris(TestCase):
         """Comprova que es genera un Warning si els parametres d'entrada no son correctes"""
         lector = Lectorcriteris(0)
         with pytest.raises(Warning):
-            lector.obtenir_criteris_materia("a", "a")
+            lector.obtenir_criteris_materia("a", "a") # type: ignore
 
     def test_formats_resultats(self):
         """Comprovem el format de retorn"""
