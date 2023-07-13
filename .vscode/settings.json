@@ -5,11 +5,11 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    "sonarlint.connectedMode.project": {
-        "connectionId": "VSCode - Progpy",
-        "projectKey": "jberbissbd_progpy"
-    },
     "python.analysis.extraPaths": [
         "./src/moduls"
-    ]
+    ],
+    "sonarlint.connectedMode.project": {
+        "connectionId": "Vscode - progpy",
+        "projectKey": "jberbissbd_progpy"
+    }
 }
