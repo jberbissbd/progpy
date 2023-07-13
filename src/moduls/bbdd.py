@@ -1,3 +1,4 @@
+
 import os.path
 import sqlite3
 from os.path import dirname
@@ -74,7 +75,6 @@ class LectorMateriesCompletes(Connectorbbdd):
             raise Warning("Error al obtenir la llista de materies:") from error
 
     def combinar_info_materies(self):
-        lectura_materies_simples = Lectormateries(self.mode).llistar_materies()
         """Retorna una llista amb totes les matèries de la base de dades combinada amb la informació de les taules
         relacionades
         :returns: lista de tuples, ValueError si no s'ha pogut obtenir la llista"""
@@ -87,8 +87,8 @@ class LectorMateriesCompletes(Connectorbbdd):
             self.cursor.close()
             if resultat_consulta is not None:
                 return resultat_consulta
-        except sqlite3.OperationalError:
-            raise ValueError("Error: nom de taula incorrecte o taula no existent")
+        except sqlite3.OperationalError as exc:
+            raise ValueError("Error: nom de taula incorrecte o taula no existent") from exc
 
 
 class Lectorsabers(Connectorbbdd):
@@ -238,6 +238,13 @@ class InformadorMateria:
         self.mode = mode
 
     def obtenir_blocssabers(self, id_materia: int):
+        """Obté els blocs amb els sabers corresponents de la materia de la base de dades
+        Parameters:
+        id_materia: int, identificador de la materia a consultar
+        Returns:
+        Llista de blocs, amb els sabers associat a cada bloc
+        
+        """
         self.id_materia = id_materia
         if not isinstance(self.id_materia, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
