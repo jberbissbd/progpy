@@ -42,7 +42,8 @@ class Connectorbbdd(Lectorbbdd):
 
 
 class Lectormateries(Connectorbbdd):
-    """Classe per a obtenir una llista de totes les matèries de la base de dades
+    """Classe per a obtenir una llista de totes les matèries de la base de
+    dades
     :parameter mode: 0 per a testing i 1 per a ús normal"""
 
     def __init__(self, mode: int):
@@ -51,7 +52,8 @@ class Lectormateries(Connectorbbdd):
         self.taula = "materia"
 
     def llistar_materies(self):
-        """Funció que retorna una llista de totes les materies de la base de dades"""
+        """Funció que retorna una llista de totes les materies de la base de
+        dades"""
         try:
             self.cursor.execute(f"SELECT * FROM {self.taula}")
             resultat = self.cursor.fetchall()
@@ -61,7 +63,8 @@ class Lectormateries(Connectorbbdd):
 
 
 class LectorMateriesCompletes(Connectorbbdd):
-    """Classe per a obtenir una llista de totes les matèries de la base de dades
+    """Classe per a obtenir una llista de totes les matèries de la base de
+    dades
     :parameter mode: 0 per a testing i 1 per a ús normal"""
 
     def __init__(self, mode: int):
@@ -70,7 +73,8 @@ class LectorMateriesCompletes(Connectorbbdd):
         self.taula = "materia_completa"
 
     def obtenir_materies(self):
-        """Funció que retorna una llista de totes les materies completes (materia + curs) de la base de dades
+        """Funció que retorna una llista de totes les materies completes
+        (materia + curs) de la base de dades
         :returns: lista de tuples"""
         try:
             self.cursor.execute(f"SELECT * FROM {self.taula}")
