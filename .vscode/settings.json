@@ -11,5 +11,9 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "Vscode - progpy",
         "projectKey": "jberbissbd_progpy"
-    }
+    },
+    "python.linting.flake8Enabled": true,
+    "python.autoComplete.extraPaths": [
+        "./src/moduls"
+    ]
 }
