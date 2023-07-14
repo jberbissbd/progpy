@@ -1,3 +1,5 @@
+"""Arxiu init dels moduls"""
+
 import sys
 import os
 from os.path import dirname

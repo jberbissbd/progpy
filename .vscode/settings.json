@@ -12,7 +12,7 @@
         "connectionId": "Vscode - progpy",
         "projectKey": "jberbissbd_progpy"
     },
-    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Enabled": false,
     "python.autoComplete.extraPaths": [
         "./src/moduls"
     ]

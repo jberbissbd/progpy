@@ -2,11 +2,16 @@
 import os.path
 import sqlite3
 from os.path import dirname
-from missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge, competencia_missatge
+
+from missatgeria import (blocs_missatge,  # pylint: disable=import-error
+                         competencia_missatge, criteri_missatge,
+                         saber_missatgeria)
 
 encoding = 'utf-8'
 
 """Module per a connectar amb la base de dades segons la ruta proporcionada per la classe Lectorbbdd"""
+
+
 class Lectorbbdd:
     """Classe per a determinar la ruta a utilitzar de la base de dades
     :parameter mode: 0 per a testing, 1 per a ús normal."""
@@ -243,7 +248,6 @@ class InformadorMateria:
         id_materia: int, identificador de la materia a consultar
         Returns:
         Llista de blocs, amb els sabers associat a cada bloc
-        
         """
         self.id_materia = id_materia
         if not isinstance(self.id_materia, int):
