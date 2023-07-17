@@ -3,7 +3,7 @@ import os.path
 import sqlite3
 from os.path import dirname
 
-from missatgeria import (blocs_missatge,  # pylint: disable=import-error
+from missatgeria import (blocs_missatge, 
                          competencia_missatge, criteri_missatge,
                          saber_missatgeria)
 
@@ -21,7 +21,7 @@ class Lectorbbdd:
         self.mode = mode
         self.ruta_arxiu_bbdd = os.path.abspath(dirname(dirname(__file__)))
         if mode == 0:
-            self.ruta_arxiu_bbdd = os.path.abspath(dirname(self.ruta_arxiu_bbdd)) + "/tests/test.db"
+            self.ruta_arxiu_bbdd = os.path.abspath(dirname(dirname(self.ruta_arxiu_bbdd))) + "/tests/test.db"
         elif mode == 1:
             self.ruta_arxiu_bbdd = self.ruta_arxiu_bbdd + "/dades/dades.db"
         else:
