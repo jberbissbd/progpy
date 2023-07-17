@@ -1,21 +1,15 @@
-import os, sys
-from os.path import dirname, join
-myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + '/../')
-
+import os
+from os.path import dirname
 from unittest import TestCase
 import pytest
 import dataclasses
-
-
-
-from src.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
+from progpy.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies, InformadorMateria
-from src.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
+from progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
 
 
-arrel_tests = os.path.abspath(dirname(__file__))
-arrel_produccio = os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/dades/dades.db")
+arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
+arrel_produccio = os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/dades/dades.db")
 
 
 class TestLector(TestCase):
@@ -24,8 +18,7 @@ class TestLector(TestCase):
     def test_mode_testing(self):
         """Comprova la ruta de l'arxiu de base de dades en el mode testeig"""
         lector = Lectorbbdd(0)
-        arrel_bbdd_tests = os.path.join(arrel_tests,"test.db")
-        self.assertEqual(lector.ruta_arxiu_bbdd, arrel_bbdd_tests,
+        self.assertEqual(lector.ruta_arxiu_bbdd, arrel_tests,
                          msg="La ruta de l'arxiu en mode testeig no es correcte")
 
     def test_mode_produccio(self):
@@ -45,7 +38,6 @@ class TestConnector(TestCase):
     def test_mode_testing(self):
         """Comprova la ruta de l'arxiu de base de dades en el mode testeig"""
         lector = Lectorbbdd(0)
-        arrel_tests = os.path.join(os.path.abspath(dirname(__file__)),"test.db")
         self.assertEqual(lector.ruta_arxiu_bbdd, arrel_tests,
                          msg="La ruta de l'arxiu en mode testeig no es correcte")
 
@@ -54,7 +46,6 @@ class TestConnector(TestCase):
         lector = Lectorbbdd(1)
         self.assertEqual(lector.ruta_arxiu_bbdd, arrel_produccio,
                          msg="La ruta de l'arxiu en mode producció no es correcte")
-
 
 
 class TestLlistadormateries(TestCase):
@@ -71,7 +62,7 @@ class TestLlistadormateries(TestCase):
         """Comprova que amb una taula errònia, genera un avís"""
         llistat = Lectormateries(0)
         llistat.taula = "materies"
-        llistat.ruta_arxiu_bbdd = os.path.join(arrel_tests,"dummy.db")
+        llistat.ruta_arxiu_bbdd = os.path.join(arrel_tests, "dummy.db")
         with pytest.raises(Warning):
             llistat.llistar_materies()
 
@@ -95,7 +86,7 @@ class TestLlistadormateriesCompletes(TestCase):
         """Comprova que amb una taula errònia, genera un avís"""
         llistat = LectorMateriesCompletes(0)
         llistat.taula = "materies"
-        llistat.ruta_arxiu_bbdd = os.path.join(arrel_tests,"dummy.db")
+        llistat.ruta_arxiu_bbdd = os.path.join(arrel_tests, "dummy.db")
         with pytest.raises(Warning):
             llistat.obtenir_materies()
 
@@ -113,7 +104,7 @@ class TestLlistadormateriesCompletes(TestCase):
         """Comprova que amb una taula errònia, genera un avís"""
         llistat = LectorMateriesCompletes(0)
         llistat.taula = "materies"
-        llistat.ruta_arxiu_bbdd = os.path.join(arrel_tests,"dummy.db")
+        llistat.ruta_arxiu_bbdd = os.path.join(arrel_tests, "dummy.db")
         with pytest.raises(ValueError):
             llistat.combinar_info_materies()
 
@@ -148,7 +139,7 @@ class TestLlistadorSabers(TestCase):
     def test_llistar_sabers_error_parametres(self):
         """Comprova que amb valors sense resultat, genera un avís"""
         llistat = Lectorsabers(0)
-        llistat.ruta_arxiu_bbdd = os.path.join(arrel_tests,"dummy.db")
+        llistat.ruta_arxiu_bbdd = os.path.join(arrel_tests, "dummy.db")
         with pytest.raises(Warning):
             llistat.segons_bloc_materia(999, 999)
 
@@ -174,7 +165,7 @@ class TestLlistadorSabers(TestCase):
     def test_error_bbdd(self):
         """Comprova que amb una taula erronia genera un Value Error"""
         lector = Lectorsabers(0)
-        lector.ruta_arxiu_bbdd = os.path.join(arrel_tests,"dummy.db")
+        lector.ruta_arxiu_bbdd = os.path.join(arrel_tests, "dummy.db")
         lector.taula = "comp"
         with pytest.raises(ValueError):
             lector.segons_bloc_materia(1, 1)
@@ -223,7 +214,7 @@ class TestLlistadorsBlocs(TestCase):
     def test_error_bbdd(self):
         """Comprova que genera un ValueError si la taula no existeix"""
         lector = Lectorsblocs(0)
-        lector.ruta_arxiu_bbdd = os.path.join(arrel_tests,"dummy.db")
+        lector.ruta_arxiu_bbdd = os.path.join(arrel_tests, "dummy.db")
         lector.taula = "comp"
         with pytest.raises(ValueError):
             lector.obtenir_blocs(1)
@@ -237,7 +228,7 @@ class TestLectorCompetencies(TestCase):
         """Comprova que la funcio competencies tan sols admet un nmbre com a entrada"""
         lector = Lectorcompetencies(0)
         with pytest.raises(Warning):
-            lector.obtenir_competencies_materia("a") # type: ignore
+            lector.obtenir_competencies_materia("a")  # type: ignore
 
     def test_obtenir_competencies(self):
         """Comprova el format de retorn amb una materia que sabem que te dades"""
@@ -249,7 +240,7 @@ class TestLectorCompetencies(TestCase):
     def test_error_bbdd(self):
         """Comprova que genera un ValueError si la taula no existeix"""
         lector = Lectorcompetencies(0)
-        lector.ruta_arxiu_bbdd = os.path.join(arrel_tests,"dummy.db")
+        lector.ruta_arxiu_bbdd = os.path.join(arrel_tests, "dummy.db")
         lector.taula = "comp"
         with pytest.raises(ValueError):
             lector.obtenir_competencies_materia(1)
@@ -268,7 +259,7 @@ class TestLectorcriteris(TestCase):
         """Comprova que es genera un Warning si els parametres d'entrada no son correctes"""
         lector = Lectorcriteris(0)
         with pytest.raises(Warning):
-            lector.obtenir_criteris_materia("a", "a") # type: ignore
+            lector.obtenir_criteris_materia("a", "a")  # type: ignore
 
     def test_formats_resultats(self):
         """Comprovem el format de retorn"""
@@ -281,7 +272,7 @@ class TestLectorcriteris(TestCase):
     def test_error_bbdd(self):
         """Comprova que genera un ValueError si la taula no existeix"""
         lector = Lectorcriteris(0)
-        lector.ruta_arxiu_bbdd = os.path.join(arrel_tests,"dummy.db")
+        lector.ruta_arxiu_bbdd = os.path.join(arrel_tests, "dummy.db")
         lector.taula = "comp"
         with pytest.raises(ValueError):
             lector.obtenir_criteris_materia(1, 1)
@@ -299,13 +290,13 @@ class TestInformadorMateria(TestCase):
         """Comprova que es genera un Warning si no s'introdueix un nombre de materia"""
         lector = InformadorMateria(0)
         with pytest.raises(Warning):
-            lector.obtenir_blocssabers("a") # type: ignore
+            lector.obtenir_blocssabers("a")  # type: ignore
 
     def test_obtenir_blocssabers_formats(self):
         # Happy path test for obtenir_blocssabers
         informador = InformadorMateria(1)
         blocs = informador.obtenir_blocssabers(1)
-        assert isinstance(blocs,list) == True
+        assert isinstance(blocs, list) is True
         assert all(dataclasses.is_dataclass(item) for item in blocs)
         assert all(dataclasses.is_dataclass(saber)
                    for bloc in blocs for saber in bloc.sabers_associats)
@@ -313,7 +304,7 @@ class TestInformadorMateria(TestCase):
     def test_obtenir_criteris_tipologia_input(self):
         informador = InformadorMateria(1)
         with pytest.raises(Warning):
-            informador.obtenir_criteris_materia("a") # type: ignore
+            informador.obtenir_criteris_materia("a")  # type: ignore
 
     def test_obtenir_criteris_materia_erronia(self):
         informador = InformadorMateria(1)
