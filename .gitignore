@@ -5,6 +5,7 @@
 /.idea/*.*
 /src/progpy/dades/Diagrams/*
 /src/progpy/dades/.dbeaver/*
+/src/progpy/dades/introduccio/*.*
 /src/progpy/dades/sabers.csv
 /src/progpy/dades/dades.db.sql
 /src/progpy/dades/.project
