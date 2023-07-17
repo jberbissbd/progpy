@@ -1,3 +1,5 @@
+"""Missatgeria interna de l'aplicació"""
+
 from dataclasses import dataclass
 
 
@@ -7,11 +9,13 @@ class criteri_missatge:
     num: int
     descripcio: str
 
+
 @dataclass(repr=True)
 class blocs_missatge:
     id: int
     text: str
     sabers_associats: list
+
 
 @dataclass(repr=True)
 class competencia_missatge:
