@@ -23,7 +23,7 @@ class Lectorbbdd:
         if mode == 0:
             self.ruta_arxiu_bbdd = os.path.normpath(os.path.abspath(dirname(dirname(self.ruta_arxiu_bbdd))) + "/tests/test.db")
         elif mode == 1:
-            self.ruta_arxiu_bbdd = self.ruta_arxiu_bbdd + "/dades/dades.db"
+            self.ruta_arxiu_bbdd = os.path.normpath(self.ruta_arxiu_bbdd + "/dades/dades.db")
         else:
             raise ValueError(
                 "Mode del programa establert incorrectament, ha de ser 0 o 1")
