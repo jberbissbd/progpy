@@ -16,4 +16,6 @@ src/progpy/moduls/__pycache__
 tests/__pycache__
 /sonarauto
 src/progpy/__pycache__
+coverage.xml
+.coverage
 
