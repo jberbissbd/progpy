@@ -19,9 +19,9 @@ class Lectorbbdd:
     def __init__(self, mode: int):
         super().__init__()
         self.mode = mode
-        self.ruta_arxiu_bbdd = os.path.abspath(dirname(dirname(__file__)))
+        self.ruta_arxiu_bbdd = os.path.normpath(os.path.abspath(dirname(dirname(__file__))))
         if mode == 0:
-            self.ruta_arxiu_bbdd = os.path.abspath(dirname(dirname(self.ruta_arxiu_bbdd))) + "/tests/test.db"
+            self.ruta_arxiu_bbdd = os.path.normpath(os.path.abspath(dirname(dirname(self.ruta_arxiu_bbdd))) + "/tests/test.db")
         elif mode == 1:
             self.ruta_arxiu_bbdd = self.ruta_arxiu_bbdd + "/dades/dades.db"
         else:
