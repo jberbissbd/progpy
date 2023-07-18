@@ -19,9 +19,9 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install tox and any other packages
-        run: pip install tox pytest pytest-cov
+        run: pip install tox pytest pytest-cov setuptools requirements.txt requirements_dev.txt
       - name: Install packages  
-        run: pip install -e .
+        run: pip wheel --no-deps -w dist .
       - name: Run tox
         run: tox -e py
       - name: SonarCloud Scan
