@@ -3,9 +3,9 @@ from os.path import dirname
 from unittest import TestCase
 import pytest
 import dataclasses
-from progpy.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
+from src.progpy.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies, InformadorMateria
-from progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
+from src.progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
 
 
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
