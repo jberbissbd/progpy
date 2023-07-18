@@ -3,7 +3,7 @@ import os.path
 import sqlite3
 from os.path import dirname
 
-from missatgeria import (blocs_missatge, 
+from missatgeria import (blocs_missatge,
                          competencia_missatge, criteri_missatge,
                          saber_missatgeria)
 
