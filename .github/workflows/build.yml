@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install tox and any other packages
-        run: pip install tox pytest pytest-cov setuptools -r
+        run: pip install tox pytest pytest-cov setuptools -r requirements_dev.txt
       - name: Install packages  
         run: pip wheel --no-deps -w dist .
       - name: Run tox
