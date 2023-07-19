@@ -9,7 +9,7 @@ from src.progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, cri
 
 
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
-arrel_produccio = os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/dades/dades.db")
+arrel_produccio = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/dades/dades.db"))
 
 
 class TestLector(TestCase):
