@@ -1,0 +1,1 @@
+SELECT DISTINCT materia.materia_id, materia.materia_nom FROM  materia, materia_completa WHERE materia.materia_tipus = 2 AND materia_completa.matcomp_curs = 6 AND materia.materia_id=materia_completa.matcomp_mat
