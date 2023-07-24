@@ -4,7 +4,7 @@ from unittest import TestCase
 import pytest
 import dataclasses
 from src.progpy.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
-    LectorMateriesCompletes, Lectorcompetencies, InformadorMateria
+    LectorMateriesCompletes, Lectorcompetencies, InformadorMateriaComuna
 from src.progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
 
 
@@ -282,19 +282,19 @@ class TestInformadorMateria(TestCase):
 
     def test_creador_materia(self):
         """Comprova que el format de retorn es una llista"""
-        lector = InformadorMateria(0)
+        lector = InformadorMateriaComuna(0)
         assert lector.mode == 0
         assert lector.id_materia is None
 
     def test_blocssabers(self):
         """Comprova que es genera un Warning si no s'introdueix un nombre de materia"""
-        lector = InformadorMateria(0)
+        lector = InformadorMateriaComuna(0)
         with pytest.raises(Warning):
             lector.obtenir_blocssabers("a")  # type: ignore
 
     def test_obtenir_blocssabers_formats(self):
         # Happy path test for obtenir_blocssabers
-        informador = InformadorMateria(1)
+        informador = InformadorMateriaComuna(1)
         blocs = informador.obtenir_blocssabers(1)
         assert isinstance(blocs, list) is True
         assert all(dataclasses.is_dataclass(item) for item in blocs)
@@ -302,14 +302,14 @@ class TestInformadorMateria(TestCase):
                    for bloc in blocs for saber in bloc.sabers_associats)
 
     def test_obtenir_criteris_tipologia_input(self):
-        informador = InformadorMateria(1)
+        informador = InformadorMateriaComuna(1)
         with pytest.raises(Warning):
-            informador.obtenir_criteris_materia("a")  # type: ignore
+            informador.obtenir_competencies_criteris("a")  # type: ignore
 
     def test_obtenir_criteris_materia_erronia(self):
-        informador = InformadorMateria(1)
+        informador = InformadorMateriaComuna(1)
         with pytest.raises(ValueError):
-            informador.obtenir_criteris_materia(9999)
+            informador.obtenir_competencies_criteris(9999)
 
 
 if __name__ == '__main__':

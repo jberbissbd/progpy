@@ -1,4 +1,3 @@
-
 import os.path
 import sqlite3
 from os.path import dirname
@@ -21,7 +20,8 @@ class Lectorbbdd:
         self.mode = mode
         self.ruta_arxiu_bbdd = os.path.normpath(os.path.abspath(dirname(dirname(__file__))))
         if mode == 0:
-            self.ruta_arxiu_bbdd = os.path.normpath(os.path.abspath(dirname(dirname(self.ruta_arxiu_bbdd))) + "/tests/test.db")
+            self.ruta_arxiu_bbdd = os.path.normpath(
+                os.path.abspath(dirname(dirname(self.ruta_arxiu_bbdd))) + "/tests/test.db")
         elif mode == 1:
             self.ruta_arxiu_bbdd = os.path.normpath(self.ruta_arxiu_bbdd + "/dades/dades.db")
         else:
@@ -90,6 +90,7 @@ class LectorMateriesCompletes(Connectorbbdd):
         try:
             ordre = f"SELECT matcomp_id, materia_nom,materia_id, nivell_nom, etapa_desc FROM materia, {self.taula}, " \
                     f"curs, nivell, etapa WHERE matcomp_mat = materia_id AND matcomp_curs = curs_id AND curs_nivell = " \
+                    f"" \
                     f"nivell_id AND nivell_etapa = etapa_id"
             self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
@@ -114,8 +115,10 @@ class Lectorsabers(Connectorbbdd):
             ordre = f"SELECT DISTINCT sabers_id, sabers_desc FROM {self.taula}, mat_sabers WHERE sabers.sabers_bloc = " \
                     f"" \
                     f"" \
+                    f"" \
                     f"? AND \
-                mat_sabers.matsaber_mat = ? AND mat_sabers.matsaber_saber = sabers.sabers_id ORDER BY sabers.sabers_id ASC"
+                mat_sabers.matsaber_mat = ? AND mat_sabers.matsaber_saber = sabers.sabers_id ORDER BY " \
+                    f"sabers.sabers_id ASC"
             self.cursor.execute(ordre, (bloc_id, materia_id))
             resultat_consulta = self.cursor.fetchall()
             if len(resultat_consulta) == 0:
@@ -239,44 +242,24 @@ class Lectorcriteris(Connectorbbdd):
             raise ValueError(f"Error: {missatge_error}") from missatge_error
 
 
-class InformadorMateria:
+class InformadorMateriaPlantilla:
     """Obté tota la informació de  la matèria de la base de dades"""
 
     def __init__(self, mode: int):
+        super().__init__()
         self.id_materia = None
         self.mode = mode
 
-    def obtenir_blocssabers(self, id_materia: int):
-        """Obté els blocs amb els sabers corresponents de la materia de la base de dades
-        Parameters:
-        id_materia: int, identificador de la materia a consultar
-        Returns:
-        Llista de blocs, amb els sabers associat a cada bloc
+    def obtenir_competencies_criteris(self, materia_id: int):
         """
-        self.id_materia = id_materia
-        if not isinstance(self.id_materia, int):
-            raise Warning("Consulta s'ha de fer amb un nombre")
-        
-        try:
-            # Obtenim els blocs de sabers:
-            blocs_materia = Lectorsblocs(self.mode).obtenir_blocs(self.id_materia)
-            # Els creuem amb els sabers:
-            for element in blocs_materia:
-                element.sabers_associats = Lectorsabers(
-                    self.mode).segons_bloc_materia(element.id, self.id_materia)
-            return blocs_materia
-        except sqlite3.OperationalError as error:
-            raise ValueError("Error: No s'ha pogut obtenir els blocs de sabers.") from error
-
-    def obtenir_criteris_materia(self, materia_id: int):
-        """
-        Given a `materia_id` integer, obtains the competencies and criteria related to that subject.
-        Raises a `Warning` if the parameter is not an integer.
-        Returns a list of formatted competencies including its id, title, description and related criteria.
+        args: materia_id: integer, obté les competències de la matèria i els criteris d'avaluació
+        corresponents.
+        Crea un `Warning` si no es proporciona un valor numèric.
+        Retor its id, title, description and related criteria.
         Raises a `ValueError` if the criteria could not be obtained due to an `OperationalError`.
         """
-        self.materia_id = materia_id
-        if not isinstance(self.materia_id, int):
+        self.id_materia = materia_id
+        if not isinstance(self.id_materia, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
         try:
             # Obtenim les competencies de la materia:
@@ -292,3 +275,29 @@ class InformadorMateria:
         except sqlite3.OperationalError as error:
             print(error)
             raise ValueError("Error: No s'ha pogut obtenir els criteris de sabers.") from error
+
+
+class InformadorMateriaComuna(InformadorMateriaPlantilla):
+    """Obté tota la informació de  la matèria de la base de dades"""
+
+    def obtenir_blocssabers(self, id_materia: int):
+        """Obté els blocs amb els sabers corresponents de la materia de la base de dades
+        Parameters:
+        id_materia: int, identificador de la materia a consultar
+        Returns:
+        Llista de blocs, amb els sabers associat a cada bloc
+        """
+        self.id_materia = id_materia
+        if not isinstance(self.id_materia, int):
+            raise Warning("Consulta s'ha de fer amb un nombre")
+
+        try:
+            # Obtenim els blocs de sabers:
+            blocs_materia = Lectorsblocs(self.mode).obtenir_blocs(self.id_materia)
+            # Els creuem amb els sabers:
+            for element in blocs_materia:
+                element.sabers_associats = Lectorsabers(
+                    self.mode).segons_bloc_materia(element.id, self.id_materia)
+            return blocs_materia
+        except sqlite3.OperationalError as error:
+            raise ValueError("Error: No s'ha pogut obtenir els blocs de sabers.") from error
