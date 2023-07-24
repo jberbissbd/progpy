@@ -115,7 +115,7 @@ class Lectorsabers(Connectorbbdd):
                     f"" \
                     f"" \
                     f"? AND \
-                mat_sabers.matsaber_mat = ? AND mat_sabers.matsaber_id = sabers.sabers_id ORDER BY sabers.sabers_id ASC"
+                mat_sabers.matsaber_mat = ? AND mat_sabers.matsaber_saber = sabers.sabers_id ORDER BY sabers.sabers_id ASC"
             self.cursor.execute(ordre, (bloc_id, materia_id))
             resultat_consulta = self.cursor.fetchall()
             if len(resultat_consulta) == 0:
@@ -256,6 +256,7 @@ class InformadorMateria:
         self.id_materia = id_materia
         if not isinstance(self.id_materia, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
+        
         try:
             # Obtenim els blocs de sabers:
             blocs_materia = Lectorsblocs(self.mode).obtenir_blocs(self.id_materia)
