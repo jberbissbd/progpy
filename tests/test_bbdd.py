@@ -3,8 +3,9 @@ from os.path import dirname
 from unittest import TestCase
 import pytest
 import dataclasses
+import sqlite3
 from src.progpy.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
-    LectorMateriesCompletes, Lectorcompetencies, InformadorMateriaComuna
+    LectorMateriesCompletes, Lectorcompetencies, InformadorMateriaComuna, InformadorMateriaPlantilla
 from src.progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
 
 
@@ -236,6 +237,12 @@ class TestLectorCompetencies(TestCase):
         resultat = lector.obtenir_competencies_materia(1)
         assert isinstance(resultat, list)
         assert len(resultat) > 0
+    
+    def test_materia_sense_competencies(self):
+        """Comprova que genera un Warning si la matèria no té competències assignades"""
+        lector = Lectorcompetencies(1)
+        with pytest.raises(Warning):
+            lector.obtenir_competencies_materia(9999)
 
     def test_error_bbdd(self):
         """Comprova que genera un ValueError si la taula no existeix"""
@@ -276,9 +283,36 @@ class TestLectorcriteris(TestCase):
         lector.taula = "comp"
         with pytest.raises(ValueError):
             lector.obtenir_criteris_materia(1, 1)
+    
+    def test_nocriteris_warning(self):
+        """Comprova que genera un Warning si no s'introdueix nmbre de criteris"""
+        lector = Lectorcriteris(0)
+        with pytest.raises(Warning):
+            lector.obtenir_criteris_materia(99999, 1)  # type: ignore
 
 
-class TestInformadorMateria(TestCase):
+class TestInformadorMateriaPlantilla(TestCase):
+    def test_error_competencies(self):
+        """Comprova que genera un Warning si no s'introdueix un nombre de materia"""
+        lector = InformadorMateriaPlantilla(0)
+        with pytest.raises(Warning):
+            lector.obtenir_competencies_criteris("a")  # type: ignore
+
+    def test_materia_erronia(self):
+        """Comprova que genera un Warning si no s'introdueix un nombre de materia"""
+        lector = InformadorMateriaPlantilla(0)
+        with pytest.raises(Warning):
+            lector.obtenir_competencies_criteris(9999)  # type: ignore
+
+    def test_format_competencies(self):
+        resultat_consulta = InformadorMateriaPlantilla(0).obtenir_competencies_criteris(1)
+        assert isinstance(resultat_consulta, list)
+        assert len(resultat_consulta) > 0
+        for element in resultat_consulta:
+            assert dataclasses.is_dataclass(element)
+
+
+class TestInformadorMateriaComuna(TestCase):
 
     def test_creador_materia(self):
         """Comprova que el format de retorn es una llista"""
@@ -308,8 +342,10 @@ class TestInformadorMateria(TestCase):
 
     def test_obtenir_criteris_materia_erronia(self):
         informador = InformadorMateriaComuna(1)
-        with pytest.raises(ValueError):
+        with pytest.raises(Warning):
             informador.obtenir_competencies_criteris(9999)
+
+
 
 
 if __name__ == '__main__':

@@ -88,15 +88,18 @@ class LectorMateriesCompletes(Connectorbbdd):
         relacionades
         :returns: lista de tuples, ValueError si no s'ha pogut obtenir la llista"""
         try:
-            ordre = f"SELECT matcomp_id, materia_nom,materia_id, nivell_nom, etapa_desc FROM materia, {self.taula}, " \
-                    f"curs, nivell, etapa WHERE matcomp_mat = materia_id AND matcomp_curs = curs_id AND curs_nivell = " \
-                    f"" \
-                    f"nivell_id AND nivell_etapa = etapa_id"
+            ordre = f"SELECT DISTINCT materia_completa.matcomp_id, materia.materia_nom, \
+                    etapa.etapa_desc, materia_tipus.materia_tipus_text,materia_tipus.materia_tipus_id,\
+                    nivell.nivell_nom,curs.curs_id, curs.curs_modalitat \
+                    FROM {self.taula}, materia, curs, nivell, etapa, materia_tipus \
+                    WHERE materia_completa.matcomp_curs = curs.curs_id AND materia.materia_id = materia_completa.matcomp_mat\
+                    AND nivell.nivell_id = curs.curs_nivell AND nivell.nivell_etapa = etapa.etapa_id \
+                    AND materia_tipus.materia_tipus_id = materia.materia_tipus \
+                    ORDER BY curs.curs_id ASC"
             self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
             self.cursor.close()
-            if resultat_consulta is not None:
-                return resultat_consulta
+            return resultat_consulta
         except sqlite3.OperationalError as exc:
             raise ValueError("Error: nom de taula incorrecte o taula no existent") from exc
 
@@ -151,6 +154,16 @@ class Lectorsblocs(Connectorbbdd):
         self.taula = "blocs"
 
     def obtenir_blocs(self, id_materia: int):
+        """Obté els blocs de la materia
+        parameter id_materia: id de la materia
+        returns: llista de blocs en format missatgeria
+        rtype: list
+        raises:
+            ValueError: Si no s'ha pogut obtenir els blocs
+            Warning: Quan es fa la consulta s'ha de fer amb un nombre
+            Warning: Quan no consten blocs asssignats a la materia
+        """
+
         self.id_materia = id_materia
         if not isinstance(self.id_materia, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
@@ -201,8 +214,8 @@ class Lectorcompetencies(Connectorbbdd):
             self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
             self.cursor.close()
-            if resultat_consulta is None:
-                raise Warning("Matèria sense competencies assignats")
+            if len(resultat_consulta) == 0:
+                raise Warning("Matèria sense competencies assignades")
             dades_retorn = [list(item) for item in resultat_consulta]
             return dades_retorn
         except sqlite3.OperationalError as missatge_error:
@@ -235,7 +248,7 @@ class Lectorcriteris(Connectorbbdd):
             self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
             self.cursor.close()
-            if resultat_consulta is None:
+            if len(resultat_consulta) == 0:
                 raise Warning("Matèria sense criteris assignats")
             return [criteri_missatge(element[0], element[1], element[2]) for element in list(resultat_consulta)]
         except sqlite3.OperationalError as missatge_error:
@@ -264,8 +277,6 @@ class InformadorMateriaPlantilla:
         try:
             # Obtenim les competencies de la materia:
             competencies_materia = list(Lectorcompetencies(self.mode).obtenir_competencies_materia(materia_id))
-            if len(competencies_materia) == 0:
-                raise ValueError("Matèria sense competencies assignades")
             # Els creuem amb els criteris:
             for element in competencies_materia:
                 element.append(Lectorcriteris(self.mode).obtenir_criteris_materia(materia_id, element[0]))
@@ -273,8 +284,7 @@ class InformadorMateriaPlantilla:
                                    competencies_materia]
             return competencies_format
         except sqlite3.OperationalError as error:
-            print(error)
-            raise ValueError("Error: No s'ha pogut obtenir els criteris de sabers.") from error
+            raise ValueError("Error: No s'ha pogut obtenir els criteris d'avaluació") from error
 
 
 class InformadorMateriaComuna(InformadorMateriaPlantilla):
