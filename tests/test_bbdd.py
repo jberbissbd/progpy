@@ -1,12 +1,12 @@
 import os
 from os.path import dirname
 from unittest import TestCase
-import pytest
 import dataclasses
-import sqlite3
+from dataclasses import dataclass, is_dataclass
+import pytest
 from src.progpy.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies, InformadorMateriaComuna, InformadorMateriaPlantilla
-from src.progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge
+from src.progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge, competencia_missatge
 
 
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
@@ -192,7 +192,7 @@ class TestLlistadorsBlocs(TestCase):
         """Comprova que el format de retorn es una llista"""
         lbloc = Lectorsblocs(0)
         retorn = lbloc.obtenir_blocs(1)
-        assert type(retorn) == list
+        assert isinstance(retorn, list), "El format de retorn es una llista"
 
     def test_obtenir_blocs_nonexistent_id(self):
         """Comprova que genera un Warning amb un bloc que sabem que es incorrecte"""
@@ -237,7 +237,7 @@ class TestLectorCompetencies(TestCase):
         resultat = lector.obtenir_competencies_materia(1)
         assert isinstance(resultat, list)
         assert len(resultat) > 0
-    
+
     def test_materia_sense_competencies(self):
         """Comprova que genera un Warning si la matèria no té competències assignades"""
         lector = Lectorcompetencies(1)
@@ -283,7 +283,7 @@ class TestLectorcriteris(TestCase):
         lector.taula = "comp"
         with pytest.raises(ValueError):
             lector.obtenir_criteris_materia(1, 1)
-    
+
     def test_nocriteris_warning(self):
         """Comprova que genera un Warning si no s'introdueix nmbre de criteris"""
         lector = Lectorcriteris(0)
@@ -304,12 +304,13 @@ class TestInformadorMateriaPlantilla(TestCase):
         with pytest.raises(Warning):
             lector.obtenir_competencies_criteris(9999)  # type: ignore
 
+
     def test_format_competencies(self):
         resultat_consulta = InformadorMateriaPlantilla(0).obtenir_competencies_criteris(1)
         assert isinstance(resultat_consulta, list)
         assert len(resultat_consulta) > 0
         for element in resultat_consulta:
-            assert dataclasses.is_dataclass(element)
+            assert is_dataclass(competencia_missatge) is True
 
 
 class TestInformadorMateriaComuna(TestCase):
@@ -346,8 +347,6 @@ class TestInformadorMateriaComuna(TestCase):
             informador.obtenir_competencies_criteris(9999)
 
 
-
-
 if __name__ == '__main__':
-    
+
     pytest.main()

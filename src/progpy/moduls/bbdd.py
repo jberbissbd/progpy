@@ -92,7 +92,8 @@ class LectorMateriesCompletes(Connectorbbdd):
                     etapa.etapa_desc, materia_tipus.materia_tipus_text,materia_tipus.materia_tipus_id,\
                     nivell.nivell_nom,curs.curs_id, curs.curs_modalitat \
                     FROM {self.taula}, materia, curs, nivell, etapa, materia_tipus \
-                    WHERE materia_completa.matcomp_curs = curs.curs_id AND materia.materia_id = materia_completa.matcomp_mat\
+                    WHERE materia_completa.matcomp_curs = curs.curs_id AND materia.materia_id = " \
+                    f"materia_completa.matcomp_mat\
                     AND nivell.nivell_id = curs.curs_nivell AND nivell.nivell_etapa = etapa.etapa_id \
                     AND materia_tipus.materia_tipus_id = materia.materia_tipus \
                     ORDER BY curs.curs_id ASC"
@@ -115,13 +116,10 @@ class Lectorsabers(Connectorbbdd):
         """Consulta la taula de sabers de la base de dades, filtrada per bloc i materia
         :returns: lista de tuples, on cada fila conté l'id i la descripcio del saber corresponent"""
         try:
-            ordre = f"SELECT DISTINCT sabers_id, sabers_desc FROM {self.taula}, mat_sabers WHERE sabers.sabers_bloc = " \
-                    f"" \
-                    f"" \
-                    f"" \
-                    f"? AND \
-                mat_sabers.matsaber_mat = ? AND mat_sabers.matsaber_saber = sabers.sabers_id ORDER BY " \
-                    f"sabers.sabers_id ASC"
+            ordre = f"SELECT DISTINCT sabers_id, sabers_desc FROM {self.taula}, mat_sabers WHERE" \
+                    f" sabers.sabers_bloc = ? AND mat_sabers.matsaber_mat = ? " \
+                    f"AND mat_sabers.matsaber_saber = sabers.sabers_id " \
+                    f"ORDER BY sabers.sabers_id ASC"
             self.cursor.execute(ordre, (bloc_id, materia_id))
             resultat_consulta = self.cursor.fetchall()
             if len(resultat_consulta) == 0:
@@ -274,17 +272,14 @@ class InformadorMateriaPlantilla:
         self.id_materia = materia_id
         if not isinstance(self.id_materia, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
-        try:
             # Obtenim les competencies de la materia:
-            competencies_materia = list(Lectorcompetencies(self.mode).obtenir_competencies_materia(materia_id))
-            # Els creuem amb els criteris:
-            for element in competencies_materia:
-                element.append(Lectorcriteris(self.mode).obtenir_criteris_materia(materia_id, element[0]))
-            competencies_format = [competencia_missatge(element[0], element[1], element[2], element[3]) for element in
-                                   competencies_materia]
-            return competencies_format
-        except sqlite3.OperationalError as error:
-            raise ValueError("Error: No s'ha pogut obtenir els criteris d'avaluació") from error
+        competencies_materia = list(Lectorcompetencies(self.mode).obtenir_competencies_materia(materia_id))
+        # Els creuem amb els criteris:
+        for element in competencies_materia:
+            element.append(Lectorcriteris(self.mode).obtenir_criteris_materia(materia_id, element[0]))
+        competencies_format = [competencia_missatge(element[0], element[1], element[2], element[3]) for element in
+                               competencies_materia]
+        return competencies_format
 
 
 class InformadorMateriaComuna(InformadorMateriaPlantilla):
@@ -300,14 +295,9 @@ class InformadorMateriaComuna(InformadorMateriaPlantilla):
         self.id_materia = id_materia
         if not isinstance(self.id_materia, int):
             raise Warning("Consulta s'ha de fer amb un nombre")
-
-        try:
-            # Obtenim els blocs de sabers:
-            blocs_materia = Lectorsblocs(self.mode).obtenir_blocs(self.id_materia)
-            # Els creuem amb els sabers:
-            for element in blocs_materia:
-                element.sabers_associats = Lectorsabers(
-                    self.mode).segons_bloc_materia(element.id, self.id_materia)
-            return blocs_materia
-        except sqlite3.OperationalError as error:
-            raise ValueError("Error: No s'ha pogut obtenir els blocs de sabers.") from error
+        # Obtenim els blocs de sabers:
+        blocs_materia = Lectorsblocs(self.mode).obtenir_blocs(self.id_materia)
+        # Els creuem amb els sabers:
+        for element in blocs_materia:
+            element.sabers_associats = Lectorsabers(self.mode).segons_bloc_materia(element.id, self.id_materia)
+        return blocs_materia
