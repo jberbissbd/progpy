@@ -1,7 +1,8 @@
 # encoding = 'utf-8'
-from progpy.moduls.bbdd import LectorMateriesCompletes # pylint: disable=import-error
+import pprint as pp
+from progpy.moduls.bbdd import LectorMateriesCompletes, Lectorcompetencies, InformadorMateriaPlantilla, LectorMateriesCompletes, LectorCursos, InformadorTransversals  # pylint: disable=import-error
 
+a = InformadorTransversals(0).obtenir_transversals_materia(1)
+    
 
-b = LectorMateriesCompletes(1)
-g = b.obtenir_materies()
-print(g)
+pp.pprint(a,compact=True)

@@ -9,6 +9,10 @@ class criteri_missatge:
     num: int
     descripcio: str
 
+@dataclass(repr=True)
+class Curs_missatge:
+    id: int
+    descripcio: str
 
 @dataclass(repr=True)
 class blocs_missatge:
@@ -33,8 +37,10 @@ class saber_missatgeria:
 
 @dataclass(repr=True)
 class Materia:
+    """Missatge d'una matèria especifica"""
     id_materia: int
     nom: str
+    id_curs: int
     curs: str
     blocs: list
     competencies: list
@@ -45,6 +51,7 @@ class Transversals:
     """Missatge de les competències transversals a treballar"""
     id_materia: int
     nom: str
+    id_curs: int
     curs: str
     competencies: list
 
