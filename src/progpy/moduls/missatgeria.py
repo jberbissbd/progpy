@@ -28,20 +28,25 @@ class competencia_missatge:
     descripcio: str
     criteris: list
 
-
 @dataclass(repr=True)
-class saber_missatgeria:
+class Saber:
+    """Missatgeria que transmet els sabers de la matèria"""
     id: int
     descripcio: str
 
 
 @dataclass(repr=True)
-class Materia:
-    """Missatge d'una matèria especifica"""
+class MateriaBase:
+    """Missatge d'una matèria"""
     id_materia: int
     nom: str
     id_curs: int
     curs: str
+
+
+@dataclass(repr=True)
+class Materia(MateriaBase):
+    """Missatge d'una matèria especifica"""
     blocs: list
     competencies: list
 
@@ -61,4 +66,4 @@ class Curriculum:
     """Missatge dels elements curriculars a tenir en compte, tant els especifics
     de la matèria com els transversals"""
     especific: list
-    trasnversal: list
+    transversal: list

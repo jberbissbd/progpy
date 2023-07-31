@@ -5,7 +5,7 @@ import itertools
 
 from missatgeria import (blocs_missatge,
                          competencia_missatge, criteri_missatge,
-                         saber_missatgeria, Curs_missatge, Transversals)
+                         Saber, Curs_missatge, Transversals, Materia, Curriculum)
 
 encoding = 'utf-8'
 
@@ -205,7 +205,7 @@ class Lectorsabers(Connectorbbdd):
             # Formatem com a llista: [(id_saber, descripcio_saber), ...]
             sabers_llista = list(resultat_consulta)
             # Formatem com a missatge:
-            sabers_missatge = [saber_missatgeria(saber[0], saber[1]) for saber in sabers_llista]
+            sabers_missatge = [Saber(saber[0], saber[1]) for saber in sabers_llista]
             return sabers_missatge
         except sqlite3.OperationalError as missatge_error:
             raise ValueError("Error:") from missatge_error
@@ -356,8 +356,12 @@ class InformadorMateriaPlantilla:
         return competencies_format
 
 
-class InformadorMateriaComuna(InformadorMateriaPlantilla):
+class InformadorElementsPropis(InformadorMateriaPlantilla):
     """Obté tota la informació de  la matèria de la base de dades"""
+
+    def __init__(self, mode: int):
+        super().__init__(mode)
+        self.mode = mode
 
     def obtenir_blocssabers(self, id_materia: int):
         """Obté els blocs amb els sabers corresponents de la materia de la base de dades
@@ -375,9 +379,25 @@ class InformadorMateriaComuna(InformadorMateriaPlantilla):
         for element in blocs_materia:
             element.sabers_associats = Lectorsabers(self.mode).segons_bloc_materia(element.id, self.id_materia)
         return blocs_materia
+    
+    def obtencio_curriculum_materia(self, id_materia: int):
+        """Obté el curriculum de la materia de la base de dades
+        Parameters:
+        id_materia: int, identificador de la materia a consultar
+        Returns:
+        Curriculum de la materia
+        """
+        self.id_materia = id_materia
+        nom_materia = LectorMateriesCompletes(self.mode).obtenir_noms_materies(id_materia)
+        id_curs_materia = LectorMateriesCompletes(self.mode).obtenir_curs_materia(self.id_materia)
+        nom_curs = LectorCursos(self.mode).obtenir_descripcio(id_curs_materia).descripcio
+        blocs = Lectorsblocs(self.mode).obtenir_blocs(self.id_materia)
+        competencies = self.obtenir_competencies_criteris(self.id_materia)
+        curriculum_materia = Materia(self.id_materia, nom_materia, id_curs_materia, nom_curs, blocs, competencies)
+        return curriculum_materia
 
 
-class InformadorTransversals(InformadorMateriaPlantilla):
+class InformadorElementsTransversals(InformadorMateriaPlantilla):
     """Classe que informa dels aspectes transversals a avaluar per una o diverses matèries,
     suposant que es tracta de la mateixa etapa i nivell"""
 
@@ -404,3 +424,20 @@ class InformadorTransversals(InformadorMateriaPlantilla):
             nom_materia = LectorMateriesCompletes(self.mode).obtenir_noms_materies(transversal)
             llista_transversals.append(Transversals(transversal, nom_materia, id_curs_materia, nom_curs.descripcio, competencies))
         return (llista_transversals)
+
+
+class InformadorGlobal:
+    """Obté tota la informació de  la matèria de la base de dades, tant dels seus elements espcífics com
+    dels tranvsersals"""
+
+    def __init__(self, mode: int):
+        self.mode = mode
+
+    def obtenir_informacio_global(self, materia: int):
+        """Obté tota la informació de  la matèria de la base de dades, tant dels seus elements espcífics com
+        dels tranvsersals"""
+        if not isinstance(materia, int):
+            raise TypeError("Consulta s'ha de fer amb un nombre")
+        curriculumglobal = Curriculum(InformadorElementsPropis(self.mode).obtencio_curriculum_materia(materia), \
+            InformadorElementsTransversals(self.mode).obtenir_transversals_materia(materia))
+        return curriculumglobal

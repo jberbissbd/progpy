@@ -5,8 +5,8 @@ import dataclasses
 from dataclasses import dataclass, is_dataclass
 import pytest
 from src.progpy.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
-    LectorMateriesCompletes, Lectorcompetencies, InformadorMateriaComuna, InformadorMateriaPlantilla
-from src.progpy.moduls.missatgeria import saber_missatgeria, blocs_missatge, criteri_missatge, competencia_missatge
+    LectorMateriesCompletes, Lectorcompetencies, InformadorElementsPropis, InformadorMateriaPlantilla
+from src.progpy.moduls.missatgeria import Saber, blocs_missatge, criteri_missatge, competencia_missatge
 
 
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
@@ -313,23 +313,23 @@ class TestInformadorMateriaPlantilla(TestCase):
             assert is_dataclass(competencia_missatge) is True
 
 
-class TestInformadorMateriaComuna(TestCase):
+class TestInformadorElementsPropis(TestCase):
 
     def test_creador_materia(self):
         """Comprova que el format de retorn es una llista"""
-        lector = InformadorMateriaComuna(0)
+        lector = InformadorElementsPropis(0)
         assert lector.mode == 0
         assert lector.id_materia is None
 
     def test_blocssabers(self):
         """Comprova que es genera un Warning si no s'introdueix un nombre de materia"""
-        lector = InformadorMateriaComuna(0)
+        lector = InformadorElementsPropis(0)
         with pytest.raises(Warning):
             lector.obtenir_blocssabers("a")  # type: ignore
 
     def test_obtenir_blocssabers_formats(self):
         # Happy path test for obtenir_blocssabers
-        informador = InformadorMateriaComuna(1)
+        informador = InformadorElementsPropis(1)
         blocs = informador.obtenir_blocssabers(1)
         assert isinstance(blocs, list) is True
         assert all(dataclasses.is_dataclass(item) for item in blocs)
@@ -337,12 +337,12 @@ class TestInformadorMateriaComuna(TestCase):
                    for bloc in blocs for saber in bloc.sabers_associats)
 
     def test_obtenir_criteris_tipologia_input(self):
-        informador = InformadorMateriaComuna(1)
+        informador = InformadorElementsPropis(1)
         with pytest.raises(Warning):
             informador.obtenir_competencies_criteris("a")  # type: ignore
 
     def test_obtenir_criteris_materia_erronia(self):
-        informador = InformadorMateriaComuna(1)
+        informador = InformadorElementsPropis(1)
         with pytest.raises(Warning):
             informador.obtenir_competencies_criteris(9999)
 
