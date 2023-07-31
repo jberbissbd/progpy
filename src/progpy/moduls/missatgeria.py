@@ -4,6 +4,19 @@ from dataclasses import dataclass
 
 
 @dataclass(repr=True)
+class Etapa:
+    id: int
+    descripcio: str
+@dataclass(repr=True)
+class Modalitat:
+    id: int
+    descripcio: str
+@dataclass(repr=True)
+class Curs:
+    id: int
+    descripcio: str
+
+@dataclass(repr=True)
 class criteri_missatge:
     id: int
     num: int
