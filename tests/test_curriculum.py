@@ -4,8 +4,9 @@ from unittest import TestCase
 import dataclasses
 from dataclasses import dataclass, is_dataclass
 import pytest
-from src.progpy.moduls.bbdd import Lectormateries, Lectorbbdd, Lectorsabers, Lectorsblocs, Lectorcriteris, \
+from src.progpy.moduls.curriculum import Lectormateries, Lectorsabers, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies, InformadorElementsPropis, InformadorMateriaPlantilla
+from src.progpy.moduls.bbdd import Lectorbbdd
 from src.progpy.moduls.missatgeria import Saber, blocs_missatge, criteri_missatge, competencia_missatge
 
 
