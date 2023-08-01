@@ -53,13 +53,14 @@ class MateriaBase:
     """Missatge d'una matèria"""
     id_materia: int
     nom: str
-    id_curs: int
-    curs: str
+
 
 
 @dataclass(repr=True)
 class Materia(MateriaBase):
     """Missatge d'una matèria especifica"""
+    id_curs: int
+    curs: str
     blocs: list
     competencies: list
 
