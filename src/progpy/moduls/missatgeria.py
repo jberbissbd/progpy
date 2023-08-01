@@ -4,6 +4,19 @@ from dataclasses import dataclass
 
 
 @dataclass(repr=True)
+class Etapa:
+    id: int
+    descripcio: str
+@dataclass(repr=True)
+class Modalitat:
+    id: int
+    descripcio: str
+@dataclass(repr=True)
+class Curs:
+    id: int
+    descripcio: str
+
+@dataclass(repr=True)
 class criteri_missatge:
     id: int
     num: int
@@ -40,13 +53,14 @@ class MateriaBase:
     """Missatge d'una matèria"""
     id_materia: int
     nom: str
-    id_curs: int
-    curs: str
+
 
 
 @dataclass(repr=True)
 class Materia(MateriaBase):
     """Missatge d'una matèria especifica"""
+    id_curs: int
+    curs: str
     blocs: list
     competencies: list
 
