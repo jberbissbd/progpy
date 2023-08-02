@@ -16,16 +16,17 @@ class GeneradorArbreMateries(Connectorbbdd):
     def __init__(self, mode):
         super().__init__(mode)
         self.mode = mode
+        self.tipus_materies = 1
 
     def obtenir_nivells(self):
         """Proporciona els nivells en els que hi ha una matèria comuna registrada"""
         try:
             ordre_nivells = "SELECT DISTINCT etapa.etapa_id,etapa_desc FROM etapa,materia, materia_completa,\
-                curs, nivell WHERE materia.materia_tipus = 1 AND materia.materia_id = materia_completa.matcomp_mat \
+                curs, nivell WHERE materia.materia_tipus = ? AND materia.materia_id = materia_completa.matcomp_mat \
                 AND materia_completa.matcomp_curs = CURS.curs_id \
                 AND curs.curs_nivell= nivell.nivell_id \
                 AND nivell_etapa = etapa.etapa_id"
-            nivells_bbdd = self.cursor.execute(ordre_nivells).fetchall()
+            nivells_bbdd = self.cursor.execute(ordre_nivells, (self.tipus_materies,)).fetchall()
             self.cursor.close()
             nivells_formatats = [Etapa(item[0], item[1]) for item in nivells_bbdd]
             return nivells_formatats
@@ -40,8 +41,8 @@ class GeneradorArbreMateries(Connectorbbdd):
                 WHERE materia_completa.matcomp_curs = curs.curs_id \
                 AND materia.materia_id = materia_completa.matcomp_mat \
                 AND modalitats.modalitats_id = curs.curs_modalitat \
-                AND materia.materia_tipus = 1 ORDER BY modalitats.modalitats_desc ASC"
-            modalitats_bbdd = self.cursor.execute(ordre_nivells).fetchall()
+                AND materia.materia_tipus = ? ORDER BY modalitats.modalitats_desc ASC"
+            modalitats_bbdd = self.cursor.execute(ordre_nivells, (self.tipus_materies,)).fetchall()
             self.cursor.close()
             modalitats_formatats = [Modalitat(item[0], item[1]) for item in modalitats_bbdd]
             return modalitats_formatats
@@ -55,9 +56,9 @@ class GeneradorArbreMateries(Connectorbbdd):
                 materia_completa ,modalitats, curs, nivell, etapa WHERE curs.curs_nivell = nivell.nivell_id\
                 AND etapa.etapa_id = nivell.nivell_etapa AND curs.curs_modalitat = modalitats.modalitats_id\
                 AND materia.materia_id = materia_completa.matcomp_mat AND materia_completa.matcomp_curs = \
-                curs.curs_id AND materia.materia_tipus = 1\
+                curs.curs_id AND materia.materia_tipus = ?\
                 ORDER BY curs.curs_id ASC"
-            self.cursor.execute(ordre)
+            self.cursor.execute(ordre, (self.tipus_materies,))
             cursos_bbdd = list(self.cursor.fetchall())
             self.cursor.close()
             cursos_formatats = [Curs(curs[0], str(curs[1] + " - " + curs[2])) for curs in cursos_bbdd]
@@ -67,6 +68,8 @@ class GeneradorArbreMateries(Connectorbbdd):
         
     def obtenir_cursos_amb_modalitat(self, modalitat: int):
         """Retorna el curs correponent a la matèria"""
+        if not isinstance(modalitat, int):
+            raise TypeError("Modalitat ha de ser un nombre")
         try:
             ordre = "SELECT DISTINCT curs.curs_id, nivell.nivell_nom, etapa.etapa_desc from  materia, \
                 materia_completa ,modalitats, curs, nivell, etapa WHERE curs.curs_nivell = nivell.nivell_id\
@@ -84,6 +87,8 @@ class GeneradorArbreMateries(Connectorbbdd):
 
     def obtenir_materies_curs(self, curs: int):
         "Retorna les matèries per a un curs concret"
+        if not isinstance(curs, int):
+            raise TypeError("Curs ha de ser un nombre")
         try:
             ordre = "SELECT DISTINCT materia_completa.matcomp_id, materia.materia_nom FROM materia, \
                 materia_completa, curs WHERE curs.curs_id = materia_completa.matcomp_curs\
