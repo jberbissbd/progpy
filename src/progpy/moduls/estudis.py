@@ -1,6 +1,6 @@
 import sqlite3
-from progpy.moduls.bbdd import Connectorbbdd
-from progpy.moduls.missatgeria import Etapa, Modalitat, Curs, MateriaBase
+from src.progpy.moduls.bbdd import Connectorbbdd
+from src.progpy.moduls.missatgeria import Etapa, Modalitat, Curs, MateriaBase
 
 # Context from Class or Interface src/progpy/moduls/missatgeria.py:Modalitat
 # Class Modalitat:
@@ -14,7 +14,7 @@ class GeneradorArbreMateries(Connectorbbdd):
     creació de la programació anual"""
 
     def __init__(self, mode):
-        super().__init__(0)
+        super().__init__(mode)
         self.mode = mode
 
     def obtenir_nivells(self):
@@ -87,7 +87,7 @@ class GeneradorArbreMateries(Connectorbbdd):
         try:
             ordre = "SELECT DISTINCT materia_completa.matcomp_id, materia.materia_nom FROM materia, \
                 materia_completa, curs WHERE curs.curs_id = materia_completa.matcomp_curs\
-				AND materia.materia_id = materia_completa.matcomp_mat AND materia.materia_tipus = 1\
+                AND materia.materia_id = materia_completa.matcomp_mat AND materia.materia_tipus = 1\
 				AND curs.curs_id = ?\
 				ORDER BY materia_completa.matcomp_id ASC"
             self.cursor.execute(ordre, (curs,))
