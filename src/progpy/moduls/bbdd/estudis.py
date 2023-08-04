@@ -1,6 +1,7 @@
 import sqlite3
-from src.progpy.moduls.bbdd import Connectorbbdd
-from src.progpy.moduls.missatgeria import Etapa, Modalitat, Curs, MateriaBase
+from src.progpy.moduls.bbdd.bbdd import Connectorbbdd
+from src.progpy.missatgeria import Etapa, Modalitat, Curs, MateriaBase
+
 
 # Context from Class or Interface src/progpy/moduls/missatgeria.py:Modalitat
 # Class Modalitat:
@@ -47,7 +48,7 @@ class GeneradorArbreMateries(Connectorbbdd):
             modalitats_formatats = [Modalitat(item[0], item[1]) for item in modalitats_bbdd]
             return modalitats_formatats
         except sqlite3.OperationalError as exc:
-            raise Warning from exc     
+            raise Warning from exc
 
     def obtenir_cursos_sense_modalitat(self):
         """Retorna el curs correponent a la matèria"""
@@ -62,10 +63,10 @@ class GeneradorArbreMateries(Connectorbbdd):
             cursos_bbdd = list(self.cursor.fetchall())
             self.cursor.close()
             cursos_formatats = [Curs(curs[0], str(curs[1] + " - " + curs[2])) for curs in cursos_bbdd]
-            return cursos_formatats            
+            return cursos_formatats
         except sqlite3.OperationalError as exc:
             raise Warning from exc
-        
+
     def obtenir_cursos_amb_modalitat(self, modalitat: int):
         """Retorna el curs correponent a la matèria"""
         if not isinstance(modalitat, int):
@@ -81,7 +82,7 @@ class GeneradorArbreMateries(Connectorbbdd):
             cursos_bbdd = list(self.cursor.fetchall())
             self.cursor.close()
             cursos_formatats = [Curs(curs[0], str(curs[1] + " - " + curs[2])) for curs in cursos_bbdd]
-            return cursos_formatats            
+            return cursos_formatats
         except sqlite3.OperationalError as exc:
             raise Warning from exc
 

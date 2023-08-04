@@ -3,17 +3,14 @@ import sqlite3
 from os.path import dirname
 import itertools
 
-from missatgeria import (blocs_missatge,
-                         competencia_missatge, criteri_missatge,
-                         Saber, Curs_missatge, Transversals, Materia, Curriculum)
-from bbdd import Connectorbbdd
+from src.progpy.missatgeria import (blocs_missatge,
+                                    competencia_missatge, criteri_missatge,
+                                    Saber, Curs_missatge, Transversals, Materia, Curriculum)
+from src.progpy.moduls.bbdd.bbdd import Connectorbbdd
 
 encoding = 'utf-8'
 
 """Module per a connectar amb la base de dades segons la ruta proporcionada per la classe Lectorbbdd"""
-
-
-
 
 
 class Lectormateries(Connectorbbdd):
@@ -56,10 +53,10 @@ class LectorCursos(Connectorbbdd):
             if len(resultat_consulta) == 0:
                 raise ValueError("No s'ha pogut obtenir la descripció del curs")
             if resultat_consulta[3] is None:
-                resultat = Curs_missatge(resultat_consulta[0], resultat_consulta[2]+" " + resultat_consulta[1])
+                resultat = Curs_missatge(resultat_consulta[0], resultat_consulta[2] + " " + resultat_consulta[1])
             else:
-                resultat = Curs_missatge(resultat_consulta[0], resultat_consulta[2] + " " + 
-                                         resultat_consulta[1] + " - "+ resultat_consulta[3])
+                resultat = Curs_missatge(resultat_consulta[0], resultat_consulta[2] + " " +
+                                         resultat_consulta[1] + " - " + resultat_consulta[3])
             return resultat
         except sqlite3.OperationalError as error:
             raise Warning from error
@@ -82,7 +79,7 @@ class LectorMateriesCompletes(Connectorbbdd):
                     WHERE materia_completa.matcomp_id = ?"
             self.cursor.execute(ordre, (materia,))
             curs = self.cursor.fetchall()[0][0]
-            
+
         except sqlite3.OperationalError as exc:
             raise Warning from exc
         return curs
@@ -98,7 +95,7 @@ class LectorMateriesCompletes(Connectorbbdd):
             return resultat
         except sqlite3.OperationalError as error:
             raise Warning("Error al obtenir la llista de materies:") from error
-    
+
     def obtenir_materies(self):
         """Funció que retorna una llista de totes les materies completes
         (materia + curs) de la base de dades
@@ -106,7 +103,7 @@ class LectorMateriesCompletes(Connectorbbdd):
         try:
             self.cursor.execute(f"SELECT * FROM {self.taula}")
             resultat = self.cursor.fetchall()
-            
+
             return resultat
         except sqlite3.OperationalError as error:
             raise Warning("Error al obtenir la llista de materies:") from error
@@ -127,7 +124,7 @@ class LectorMateriesCompletes(Connectorbbdd):
                     ORDER BY curs.curs_id ASC"
             self.cursor.execute(ordre)
             resultat_consulta = self.cursor.fetchall()
-            
+
             return resultat_consulta
         except sqlite3.OperationalError as exc:
             raise ValueError("Error: nom de taula incorrecte o taula no existent") from exc
@@ -148,7 +145,7 @@ class LectorMateriesCompletes(Connectorbbdd):
                                     AND materia_completa.matcomp_curs = ? \
                                     AND materia.materia_id = materia_completa.matcomp_mat"
             self.cursor.execute(ordre_transversals, (curs,))
-            elements = itertools.chain(*self.cursor.fetchall())                
+            elements = itertools.chain(*self.cursor.fetchall())
             elements_nous = [element for element in elements if element not in transversals]
             transversals.extend(elements_nous)
             return transversals
@@ -175,7 +172,7 @@ class Lectorsabers(Connectorbbdd):
             resultat_consulta = self.cursor.fetchall()
             if len(resultat_consulta) == 0:
                 raise Warning("Error: No s'ha pogut obtenir la llista de sabers.")
-            
+
             # Formatem com a llista: [(id_saber, descripcio_saber), ...]
             sabers_llista = list(resultat_consulta)
             # Formatem com a missatge:
@@ -353,7 +350,7 @@ class InformadorElementsPropis(InformadorMateriaPlantilla):
         for element in blocs_materia:
             element.sabers_associats = Lectorsabers(self.mode).segons_bloc_materia(element.id, self.id_materia)
         return blocs_materia
-    
+
     def obtencio_curriculum_materia(self, id_materia: int):
         """Obté el curriculum de la materia de la base de dades
         Parameters:
@@ -396,7 +393,8 @@ class InformadorElementsTransversals(InformadorMateriaPlantilla):
             competencies = []
             competencies = self.obtenir_competencies_criteris(transversal)
             nom_materia = LectorMateriesCompletes(self.mode).obtenir_noms_materies(transversal)
-            llista_transversals.append(Transversals(transversal, nom_materia, id_curs_materia, nom_curs.descripcio, competencies))
+            llista_transversals.append(
+                Transversals(transversal, nom_materia, id_curs_materia, nom_curs.descripcio, competencies))
         return (llista_transversals)
 
 
@@ -413,5 +411,5 @@ class InformadorGlobal:
         if not isinstance(materia, int):
             raise TypeError("Consulta s'ha de fer amb un nombre")
         curriculumglobal = Curriculum(InformadorElementsPropis(self.mode).obtencio_curriculum_materia(materia), \
-            InformadorElementsTransversals(self.mode).obtenir_transversals_materia(materia))
+                                      InformadorElementsTransversals(self.mode).obtenir_transversals_materia(materia))
         return curriculumglobal

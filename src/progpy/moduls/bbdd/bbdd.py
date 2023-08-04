@@ -1,11 +1,6 @@
 import os.path
 import sqlite3
 from os.path import dirname
-import itertools
-
-from missatgeria import (blocs_missatge,
-                         competencia_missatge, criteri_missatge,
-                         Saber, Curs_missatge, Transversals, Materia, Curriculum)
 
 encoding = 'utf-8'
 
@@ -19,7 +14,7 @@ class Lectorbbdd:
     def __init__(self, mode: int):
         super().__init__()
         self.mode = mode
-        self.ruta_arxiu_bbdd = os.path.normpath(os.path.abspath(dirname(dirname(__file__))))
+        self.ruta_arxiu_bbdd = os.path.normpath(os.path.abspath(dirname(dirname(dirname(__file__)))))
         if mode == 0:
             self.ruta_arxiu_bbdd = os.path.normpath(
                 os.path.abspath(dirname(dirname(self.ruta_arxiu_bbdd))) + "/tests/test.db")

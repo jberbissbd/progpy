@@ -2,14 +2,11 @@ import os
 from os.path import dirname
 from unittest import TestCase
 import dataclasses
-from dataclasses import dataclass, is_dataclass
+from dataclasses import is_dataclass
 import pytest
-from src.progpy.moduls.curriculum import Lectormateries, Lectorsabers, Lectorsblocs, Lectorcriteris, \
+from src.progpy.moduls.bbdd.curriculum import Lectormateries, Lectorsabers, Lectorsblocs, Lectorcriteris, \
     LectorMateriesCompletes, Lectorcompetencies, InformadorElementsPropis, InformadorMateriaPlantilla, \
     InformadorElementsTransversals, InformadorGlobal
-from src.progpy.moduls.bbdd import Lectorbbdd
-from src.progpy.moduls.missatgeria import Saber, blocs_missatge, criteri_missatge, competencia_missatge, Curriculum
-
 
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
 arrel_produccio = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/dades/dades.db"))
@@ -329,8 +326,8 @@ class TestInformadorTransversals(TestCase):
             informador.obtenir_transversals_materia("a")  # type: ignore
 
 
-
 class TestInformadorGlobals(TestCase):
+    """Testeja la classe InformadorGlobal"""
     def test_obtenir_informacio_global_format_entrada(self):
         """Comprova que el format de retorn es una llista"""
         informador = InformadorGlobal(1)
@@ -338,6 +335,7 @@ class TestInformadorGlobals(TestCase):
             informador.obtenir_informacio_global("a")  # type: ignore
 
     def test_obtenir_informacio_global(self):
+        """Comprova el format de retorn d'InformadorGlobal"""
         informador = InformadorGlobal(1)
         resposta_global = informador.obtenir_informacio_global(2)
         assert is_dataclass(resposta_global)

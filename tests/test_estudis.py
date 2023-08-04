@@ -3,12 +3,11 @@ from os.path import dirname
 from unittest import TestCase
 import sqlite3
 import pytest
-import dataclasses
-from dataclasses import dataclass, is_dataclass
+from dataclasses import is_dataclass
 
 
-from src.progpy.moduls.estudis import GeneradorArbreMateries
-from src.progpy.moduls.missatgeria import MateriaBase
+from src.progpy.moduls.bbdd.estudis import GeneradorArbreMateries
+from src.progpy.missatgeria import MateriaBase
 
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
 arrel_produccio = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))),
