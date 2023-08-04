@@ -1,6 +1,6 @@
 """Missatgeria interna de l'aplicació"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass,field
 
 
 @dataclass(repr=True)
@@ -15,6 +15,20 @@ class Modalitat:
 class Curs:
     id: int
     descripcio: str
+
+
+@dataclass(repr=True)
+class NovaProgramacio:
+    nom: str
+    descripcio: str
+    durada: float = field(default=0.0)
+
+@dataclass(repr=True)
+class Programacio:
+    id: int
+    nom: str
+    descripcio: str
+    durada: float = field(default=0.0)
 
 @dataclass(repr=True)
 class criteri_missatge:
