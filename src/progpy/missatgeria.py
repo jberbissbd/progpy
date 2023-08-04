@@ -1,30 +1,56 @@
 """Missatgeria interna de l'aplicació"""
 
-from dataclasses import dataclass,field
+from dataclasses import dataclass, field
 
 
 @dataclass(repr=True)
 class Etapa:
+    """Missatgeria de l'Etapa"""
     id: int
     descripcio: str
+    
+    def __post_init__(self):
+        if isinstance(self.id, int) is False or isinstance(self.descripcio, str) is False:
+            raise TypeError("Id no té format numèric  o descripcio no tenen format de text")
+    
+
 @dataclass(repr=True)
 class Modalitat:
+    """Missatgeria de la modalitat"""
     id: int
     descripcio: str
+
+    def __post_init__(self):
+        if isinstance(self.id, int) is False or isinstance(self.descripcio, str) is False:
+            raise TypeError("Id no té format numèric  o descripcio no tenen format de text")
+
+
 @dataclass(repr=True)
 class Curs:
+    """Missatgeria del curs"""
     id: int
     descripcio: str
+
+    def __post_init__(self):
+        if isinstance(self.id, int) is False or isinstance(self.descripcio, str) is False:
+            raise TypeError("Id no té format numèric  o descripcio no tenen format de text")
 
 
 @dataclass(repr=True)
 class NovaProgramacio:
+    """Classe de missatge per a noves programacions"""
     nom: str
     descripcio: str
     durada: float = field(default=0.0)
 
+    def __post_init__(self):
+        if isinstance(self.nom, str) is False or isinstance(self.descripcio, str) is False:
+            raise TypeError("Nom o descripcio no tenen format de text")
+
+
 @dataclass(repr=True)
 class Programacio:
+    """Programacio de la Base de dades"""
     id: int
     nom: str
     descripcio: str
