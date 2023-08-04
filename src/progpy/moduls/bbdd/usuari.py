@@ -1,7 +1,7 @@
 from dataclasses import is_dataclass
 import sqlite3
 
-from bbdd.bbdd import Connectorbbdd
+from bbdd.bbdd import Connectorbbdd #  pylint: ignore import-error
 from progpy.missatgeria import NovaProgramacio
 
 
@@ -18,9 +18,8 @@ class ControladorProgramacions(Connectorbbdd):
             raise TypeError("Missatge no és dataclass")
         try:
             ordre = f"INSERT INTO {self.taula} ?, ?, ?"
-            print(ordre)
-            # self.cursor.execute(ordre, (missatge.nom, missatge.descripcio, missatge.durada))
-            # self.cursor.close()
+            self.cursor.execute(ordre, (missatge.nom, missatge.descripcio, missatge.durada))
+            self.cursor.close()
             return True
         except sqlite3.OperationalError as missatge_error:
             raise ValueError("Error:") from missatge_error
@@ -28,7 +27,6 @@ class ControladorProgramacions(Connectorbbdd):
     def actualitzar_programacio(self, missatge: list):
         "Actualitzar una programacio o diverses proporcionades per una llista"
         # Comprovem que el missatge d'entrada és una llista
-        print(missatge)
         if isinstance(missatge, list) is False:
             raise TypeError("Missatge no és una llista")
         # Comprovem el format d'entrada de les programacions a actualitzar:
