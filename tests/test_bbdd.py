@@ -1,7 +1,7 @@
 import os
 from os.path import dirname
 from unittest import TestCase
-from src.progpy.moduls.bbdd.bbdd import Lectorbbdd
+from src.progpy.moduls.bbdd.base import Lectorbbdd
 
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
 arrel_produccio = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/dades/dades.db"))

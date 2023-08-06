@@ -1,9 +1,9 @@
 import dataclasses
-from dataclasses import *
+from dataclasses import dataclass
 from unittest import TestCase
 import pytest
 
-from src.progpy.missatgeria import Etapa, Modalitat, NovaProgramacio
+from missatgeria import Etapa, Modalitat, NovaProgramacio
 
 
 class EtapaTests(TestCase):
@@ -11,9 +11,9 @@ class EtapaTests(TestCase):
     def test_format_variables_creacio(self):
         "Comprova que les variables de l'objecte NovaProgramacio son correctes"
         with pytest.raises(TypeError):
-            error_descripcio = Etapa(1, 1)  # pylint: ignore=unused-variable
+            error_descripcio = Etapa(1, 1)  # type: ignore # noqa: F841 pylint: disable=unused-variable
         with pytest.raises(TypeError):
-            error_id = Etapa("a", "a")  # pylint: ignore=unused-variable
+            error_id = Etapa("a", "a")  # type: ignore # pylint: disable=unused-variable, type: ignore # noqa: F841
 
     def test_creacio_nova_programacio(self):
         "Comprova que l'objecte NovaProgramacio es una instància de la classe NovaProgramacio"
@@ -26,9 +26,9 @@ class ModalitatTests(TestCase):
     def test_format_variables_creacio(self):
         "Comprova que les variables de l'objecte NovaProgramacio son correctes"
         with pytest.raises(TypeError):
-            modalitat_descripcio = Modalitat(1, 1)  # pylint: ignore=unused-variable
+            modalitat_descripcio = Modalitat(1, 1)  # type: ignore pylint: ignore=unused-variable # noqa: F841
         with pytest.raises(TypeError):
-            modalitat_id = Modalitat("a", "a")  # pylint: ignore=unused-variable
+            modalitat_id = Modalitat("a", "a")  # type: ignore pylint: ignore=unused-variable # noqa: F841
 
     def test_creacio_nova_programacio(self):
         "Comprova que l'objecte NovaProgramacio es una instància de la classe NovaProgramacio"

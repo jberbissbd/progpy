@@ -1,12 +1,15 @@
 import os.path
+import sys
 import sqlite3
 from os.path import dirname
 import itertools
 
-from src.progpy.missatgeria import (blocs_missatge,
-                                    competencia_missatge, criteri_missatge,
-                                    Saber, Curs_missatge, Transversals, Materia, Curriculum)
-from src.progpy.moduls.bbdd.bbdd import Connectorbbdd
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+
+from missatgeria import (blocs_missatge, competencia_missatge, criteri_missatge,
+                                Saber, Curs_missatge, Transversals, Materia, Curriculum)
+from bbdd.base import Connectorbbdd
 
 encoding = 'utf-8'
 
@@ -410,6 +413,6 @@ class InformadorGlobal:
         dels tranvsersals"""
         if not isinstance(materia, int):
             raise TypeError("Consulta s'ha de fer amb un nombre")
-        curriculumglobal = Curriculum(InformadorElementsPropis(self.mode).obtencio_curriculum_materia(materia), \
+        curriculumglobal = Curriculum(InformadorElementsPropis(self.mode).obtencio_curriculum_materia(materia),
                                       InformadorElementsTransversals(self.mode).obtenir_transversals_materia(materia))
         return curriculumglobal

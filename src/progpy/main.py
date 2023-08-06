@@ -1,11 +1,12 @@
 # encoding = 'utf-8'
 import pprint as pp
-from progpy.missatgeria import NovaProgramacio, Programacio
+
+from dataclasses import asdict, dataclass
+from moduls.missatgeria import NovaProgramacio, Programacio
 from progpy.moduls.bbdd.usuari import ControladorProgramacions
+from progpy.moduls.bbdd.curriculum import Lectorcompetencies, Lectorcriteris, Lectorsabers
+a = ControladorProgramacions(0).obtenir_programacions()
+print(a)
 
-nova = NovaProgramacio("Curs", "Curs de prova")
-antiga = Programacio(1, "Antiga", "Antiga", 0.0)
 
-a = ControladorProgramacions(0)
-a.actualitzar_programacio(antiga)
 

@@ -1,17 +1,21 @@
 import os
+import sys
 from os.path import dirname
 from unittest import TestCase
 import sqlite3
 import pytest
 from dataclasses import is_dataclass
 
-
-from src.progpy.moduls.bbdd.estudis import GeneradorArbreMateries
-from src.progpy.missatgeria import MateriaBase
-
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
-arrel_produccio = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))),
-                                                "src/progpy/dades/dades.db"))
+arrel_produccio = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/dades/dades.db"))
+arrel_moduls = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/"))
+
+sys.path.append(arrel_moduls)
+
+from bbdd.estudis import GeneradorArbreMateries
+from missatgeria import MateriaBase
+
+
 
 
 class TestGeneradorArbresMateries(TestCase):

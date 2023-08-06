@@ -1,16 +1,26 @@
 import os
+import sys
 from os.path import dirname
+
+
+
 from unittest import TestCase
 import dataclasses
 from dataclasses import is_dataclass
 import pytest
-from src.progpy.moduls.bbdd.curriculum import Lectormateries, Lectorsabers, Lectorsblocs, Lectorcriteris, \
-    LectorMateriesCompletes, Lectorcompetencies, InformadorElementsPropis, InformadorMateriaPlantilla, \
-    InformadorElementsTransversals, InformadorGlobal
+
 
 arrel_tests = os.path.join(os.path.abspath(dirname(__file__)), "test.db")
 arrel_produccio = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/dades/dades.db"))
+arrel_moduls = os.path.normpath(os.path.join(os.path.abspath(dirname(dirname(__file__))), "src/progpy/moduls"))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(arrel_moduls)
+print(sys.path)
 
+
+from bbdd.curriculum import Lectormateries, Lectorsabers, Lectorsblocs, Lectorcriteris, \
+    LectorMateriesCompletes, Lectorcompetencies, InformadorElementsPropis, InformadorMateriaPlantilla, \
+    InformadorElementsTransversals, InformadorGlobal
 
 class TestLlistadormateries(TestCase):
     """Comprova la classe Lectormateries"""

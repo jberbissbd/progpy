@@ -1,6 +1,9 @@
 import sqlite3
-from src.progpy.moduls.bbdd.bbdd import Connectorbbdd
-from src.progpy.missatgeria import Etapa, Modalitat, Curs, MateriaBase
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from bbdd.base import Connectorbbdd
+from missatgeria import Etapa, Modalitat, Curs, MateriaBase
 
 
 # Context from Class or Interface src/progpy/moduls/missatgeria.py:Modalitat
