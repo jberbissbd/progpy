@@ -56,6 +56,24 @@ class Programacio:
     descripcio: str
     durada: float = field(default=0.0)
 
+
+@dataclass(repr=True)
+class NouTema:
+    """Missatge de nou tema"""
+    id: int
+    num: int
+    descripcio: str
+
+
+@dataclass(repr=True)
+class Tema:
+    """Missatge de nou tema"""
+    id: int
+    num: int
+    descripcio: str
+    programacio: int
+
+
 @dataclass(repr=True)
 class criteri_missatge:
     id: int

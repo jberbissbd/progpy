@@ -95,10 +95,10 @@ class GeneradorArbreMateries(Connectorbbdd):
             raise TypeError("Curs ha de ser un nombre")
         try:
             ordre = "SELECT DISTINCT materia_completa.matcomp_id, materia.materia_nom FROM materia, \
-                materia_completa, curs WHERE curs.curs_id = materia_completa.matcomp_curs\
-                AND materia.materia_id = materia_completa.matcomp_mat AND materia.materia_tipus = 1\
-				AND curs.curs_id = ?\
-				ORDER BY materia_completa.matcomp_id ASC"
+            materia_completa, curs WHERE curs.curs_id = materia_completa.matcomp_curs\
+            AND materia.materia_id = materia_completa.matcomp_mat AND materia.materia_tipus = 1\
+            AND curs.curs_id = ?\
+            ORDER BY materia_completa.matcomp_id ASC"
             self.cursor.execute(ordre, (curs,))
             materies_bbdd = list(self.cursor.fetchall())
             self.cursor.close()
