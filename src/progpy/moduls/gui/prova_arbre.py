@@ -3,7 +3,7 @@ import os
 import sys
 from dataclasses import asdict
 from xml.etree.ElementTree import tostring
-from PySide6.QtWidgets import QDialog, QApplication, QTreeWidget, QHBoxLayout, QTreeWidgetItem
+from PySide6.QtWidgets import QDialog, QApplication, QTreeWidget, QHBoxLayout, QTreeWidgetItem, QVBoxLayout, QComboBox
 from PySide6.QtCore import Qt
 from tomlkit import key
 
@@ -34,31 +34,46 @@ class Finestra(QDialog):
         self.setMinimumSize(400, 300)
         self.distribucio = QHBoxLayout()
         self.setLayout(self.distribucio)
+        self.distribucio_competencies = QVBoxLayout()
+        self.distribucio.addLayout(self.distribucio_competencies)
         self.dades_originals = QTreeWidget()
+        self.selector_materia = QComboBox()
+        self.selector_materia.setPlaceholderText("Seleccioneu primer una materia")
+        self.selector_materia.showPopup()
+        self.distribucio_competencies.addWidget(self.selector_materia)
+        self.distribucio_competencies.addWidget(self.dades_originals)
         self.dades_originals.setAlternatingRowColors(True)
         self.dades_originals.setColumnCount(3)
-        self.dades_originals.setHeaderLabels(["ID","Nom", "Descripció"])
-        self.distribucio.addWidget(self.dades_originals)
+        self.dades_originals.setHeaderLabels(["Competencia", "Descripció", "ID"])
+        self.dades_originals.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.dades_originals.setColumnHidden(2, True)
+
         self.afegir_dades()
         self.dades_originals.clicked.connect(self.seleccio_valors)
 
     def afegir_dades(self):
-        dades = conversioarbre(InformadorMateriaPlantilla(0).obtenir_competencies_criteris(1))
+        dades = conversioarbre(InformadorMateriaPlantilla(0).obtenir_competencies_criteris(9))
         items = []
         for clau, values in dades.items():
-            valor_actual = values['num']
+            # Afegim les dades del diccionari corresponent
+            valor_actual = str(values['num'])
             clau_actual = str(clau)
             text_competencia = f"Competencia {valor_actual}"
             descripcio = values['descripcio']
-            item = QTreeWidgetItem([clau_actual, text_competencia, descripcio])
-            for value in values:
-                print(value[1])
-
+            criteris = values['criteris']
+            self.dades_originals.setColumnWidth(0, 90)
+            item = QTreeWidgetItem([valor_actual, descripcio, clau_actual])
+            for element in criteris.values():
+                id_criteri = element['id']
+                text_criteri = f"{valor_actual}.{element['num']}: {element['descripcio']}"
+                nou_item = QTreeWidgetItem(["", text_criteri, str(id_criteri)])
+                item.addChild(nou_item)
             items.append(item)
         self.dades_originals.insertTopLevelItems(0, items)
+
     
     def seleccio_valors(self):
-        print(self.dades_originals.currentColumn(),self.dades_originals.currentIndex().row())
+        print(self.dades_originals.currentItem().text(self.dades_originals.currentIndex().column()))
 
 
 
