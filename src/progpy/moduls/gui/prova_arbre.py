@@ -1,10 +1,12 @@
 import dataclasses
+from decimal import ROUND_UP
+import math
 import os
 import sys
 from dataclasses import asdict
 from xml.etree.ElementTree import tostring
-from PySide6.QtWidgets import QDialog, QApplication, QTreeWidget, QHBoxLayout, QTreeWidgetItem, QVBoxLayout, QComboBox
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QDialog, QApplication, QTreeWidget, QHBoxLayout, QTreeWidgetItem, QVBoxLayout, QComboBox, QWidget, QPushButton, QSpacerItem, QSizePolicy
+from PySide6.QtCore import Qt, QSize
 from tomlkit import key
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -28,7 +30,7 @@ def conversioarbre(arbre: list):
     return llista_arbre
 
 
-class Finestra(QDialog):
+class Finestra(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Seleccio de la materia per a la programacio didactica.")
@@ -37,26 +39,43 @@ class Finestra(QDialog):
         self.distribucio = QHBoxLayout()
         self.setLayout(self.distribucio)
         self.distribucio_competencies = QVBoxLayout()
+        self.disposicio_botons = QVBoxLayout()
+        self.botons_espaciador = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.distribucio.addLayout(self.distribucio_competencies)
-        self.dades_originals = QTreeWidget()
+        self.distribucio.addLayout(self.disposicio_botons)
+        self.boto_afegir = QPushButton("Afegir")
+        self.boto_eliminar = QPushButton("Eliminar")
+        self.disposicio_botons.addWidget(self.boto_afegir)
+        self.disposicio_botons.addWidget(self.boto_eliminar)
+        self.disposicio_botons.addSpacerItem(self.botons_espaciador)
+        self.dades_curriculum = QTreeWidget()
+        self.dades_curriculum.setStyleSheet("QTreeView::item { padding: 10px }height:{QFontInfo(self.font()).pixelSize() * 2}px")
+        self.dades_curriculum.setWordWrap(True)
+        self.dades_curriculum.sizeHintForRow(300)
+        self.dades_programacio = QTreeWidget()
+        self.dades_programacio.setAlternatingRowColors(True)
+        self.dades_programacio.setColumnCount(3)
+        self.dades_programacio.setHeaderLabels(["Competencia", "Descripció", "ID"])
+        self.dades_programacio.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.dades_programacio.setColumnHidden(2, True)
+        self.distribucio.addWidget(self.dades_programacio)
         self.selector_materia = QComboBox()
         self.selector_materia.currentIndexChanged.connect(self.canvi_materia_seleccionada)
         self.selector_materia.setPlaceholderText("Seleccioneu primer una materia")
         self.selector_materia.showPopup()
         self.distribucio_competencies.addWidget(self.selector_materia)
-        self.distribucio_competencies.addWidget(self.dades_originals)
-        self.dades_originals.setAlternatingRowColors(True)
-        self.dades_originals.setColumnCount(3)
-        self.dades_originals.setHeaderLabels(["Competencia", "Descripció", "ID"])
-        self.dades_originals.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.dades_originals.setColumnHidden(2, True)
+        self.distribucio_competencies.addWidget(self.dades_curriculum)
+        self.dades_curriculum.setAlternatingRowColors(True)
+        self.dades_curriculum.setColumnCount(3)
+        self.dades_curriculum.setHeaderLabels(["Competencia", "Descripció", "ID"])
+        self.dades_curriculum.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.dades_curriculum.setColumnHidden(2, True)
         self.generar_opcions_materies()
-        self.dades_originals.clicked.connect(self.seleccio_valors)
+        self.dades_curriculum.clicked.connect(self.seleccio_valors)
 
     def generar_opcions_materies(self):
         self.dades_selector_materia = LectorMateriesCompletes(0).obtenir_materies()
         self.dades_selector_materia = [element.__dict__ for element in self.dades_selector_materia]
-        print(self.dades_selector_materia)
         for materia in self.dades_selector_materia:
             self.selector_materia.addItem(materia["nom"], materia["id_materia"])
 
@@ -66,28 +85,32 @@ class Finestra(QDialog):
         self.afegir_dades(id)
 
     def afegir_dades(self, materia):
-        self.dades_originals.clear()
+        self.dades_curriculum.clear()
         dades = conversioarbre(InformadorMateriaPlantilla(0).obtenir_competencies_criteris(materia))
         items = []
         for clau, values in dades.items():
             # Afegim les dades del diccionari corresponent
             valor_actual = str(values['num'])
             clau_actual = str(clau)
-            text_competencia = f"Competencia {valor_actual}"
             descripcio = values['descripcio']
+            calcul_alçada = len(descripcio)/30
             criteris = values['criteris']
-            self.dades_originals.setColumnWidth(0, 90)
+            self.dades_curriculum.setColumnWidth(0, 90)
             item = QTreeWidgetItem([valor_actual, descripcio, clau_actual])
+            item.setSizeHint(0, QSize(310, math.ceil(calcul_alçada)*11))
             for element in criteris.values():
                 id_criteri = element['id']
                 text_criteri = f"{valor_actual}.{element['num']}: {element['descripcio']}"
-                nou_item = QTreeWidgetItem(["", text_criteri, str(id_criteri)])
+                nou_item = QTreeWidgetItem(["", text_criteri, str(id_criteri)])                
+                nombre_files = (math.ceil(len(text_criteri)/30))
+                nou_item.setSizeHint(0, QSize(310, nombre_files*12))
                 item.addChild(nou_item)
             items.append(item)
-        self.dades_originals.insertTopLevelItems(0, items)
+        self.dades_curriculum.insertTopLevelItems(0, items)
 
     def seleccio_valors(self):
-        print(self.dades_originals.currentIndex().row())
+        print(self.dades_curriculum.currentItem().childCount())
+        print(self.dades_curriculum.currentItem().text(2))
 
 
 if __name__ == "__main__":
