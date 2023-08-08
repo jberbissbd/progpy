@@ -7,10 +7,10 @@ from PySide6.QtWidgets import QDialog, QApplication, QTreeWidget, QHBoxLayout, Q
 from PySide6.QtCore import Qt
 from tomlkit import key
 
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from bbdd.curriculum import Lectorcriteris, Lectorcompetencies, InformadorMateriaPlantilla
+from bbdd.curriculum import Lectorcriteris, Lectorcompetencies, InformadorMateriaPlantilla, LectorMateriesCompletes
+
 
 def conversioarbre(arbre: list):
     llista_arbre = {}
@@ -26,6 +26,8 @@ def conversioarbre(arbre: list):
             criteris_dict[element["id"]] = element
         item["criteris"] = criteris_dict
     return llista_arbre
+
+
 class Finestra(QDialog):
     def __init__(self):
         super().__init__()
@@ -38,6 +40,7 @@ class Finestra(QDialog):
         self.distribucio.addLayout(self.distribucio_competencies)
         self.dades_originals = QTreeWidget()
         self.selector_materia = QComboBox()
+        self.selector_materia.currentIndexChanged.connect(self.canvi_materia_seleccionada)
         self.selector_materia.setPlaceholderText("Seleccioneu primer una materia")
         self.selector_materia.showPopup()
         self.distribucio_competencies.addWidget(self.selector_materia)
@@ -47,12 +50,24 @@ class Finestra(QDialog):
         self.dades_originals.setHeaderLabels(["Competencia", "Descripció", "ID"])
         self.dades_originals.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.dades_originals.setColumnHidden(2, True)
-
-        self.afegir_dades()
+        self.generar_opcions_materies()
         self.dades_originals.clicked.connect(self.seleccio_valors)
 
-    def afegir_dades(self):
-        dades = conversioarbre(InformadorMateriaPlantilla(0).obtenir_competencies_criteris(9))
+    def generar_opcions_materies(self):
+        self.dades_selector_materia = LectorMateriesCompletes(0).obtenir_materies()
+        self.dades_selector_materia = [element.__dict__ for element in self.dades_selector_materia]
+        print(self.dades_selector_materia)
+        for materia in self.dades_selector_materia:
+            self.selector_materia.addItem(materia["nom"], materia["id_materia"])
+
+    def canvi_materia_seleccionada(self):
+        valor_actual = self.selector_materia.currentIndex()
+        id = self.dades_selector_materia[valor_actual]["id_materia"]
+        self.afegir_dades(id)
+
+    def afegir_dades(self, materia):
+        self.dades_originals.clear()
+        dades = conversioarbre(InformadorMateriaPlantilla(0).obtenir_competencies_criteris(materia))
         items = []
         for clau, values in dades.items():
             # Afegim les dades del diccionari corresponent
@@ -71,10 +86,8 @@ class Finestra(QDialog):
             items.append(item)
         self.dades_originals.insertTopLevelItems(0, items)
 
-    
     def seleccio_valors(self):
-        print(self.dades_originals.currentItem().text(self.dades_originals.currentIndex().column()))
-
+        print(self.dades_originals.currentIndex().row())
 
 
 if __name__ == "__main__":

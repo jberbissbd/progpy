@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 
 from missatgeria import (blocs_missatge, competencia_missatge, criteri_missatge,
-                                Saber, Curs_missatge, Transversals, Materia, Curriculum)
+                                Saber, Curs_missatge, Transversals, Materia, Curriculum, MateriaBase)
 from bbdd.base import Connectorbbdd
 
 encoding = 'utf-8'
@@ -104,12 +104,16 @@ class LectorMateriesCompletes(Connectorbbdd):
         (materia + curs) de la base de dades
         :returns: lista de tuples"""
         try:
-            self.cursor.execute(f"SELECT * FROM {self.taula}")
-            resultat = self.cursor.fetchall()
+            self.cursor.execute(f"SELECT DISTINCT materia.materia_nom, materia_completa.matcomp_id FROM materia, "
+                                f"{self.taula} WHERE materia.materia_id = materia_completa.matcomp_mat")
+            resultat_ordre = self.cursor.fetchall()
+            llista_formatada = [MateriaBase(element[1],element[0]) for element in resultat_ordre]
 
-            return resultat
+            return llista_formatada
         except sqlite3.OperationalError as error:
             raise Warning("Error al obtenir la llista de materies:") from error
+        finally:
+            self.cursor.close()
 
     def combinar_info_materies(self):
         """Retorna una llista amb totes les matèries de la base de dades combinada amb la informació de les taules
