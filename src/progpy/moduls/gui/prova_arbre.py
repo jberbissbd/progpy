@@ -58,6 +58,7 @@ class Finestra(QWidget):
         self.dades_programacio.setHeaderLabels(["Competencia", "Descripció", "ID"])
         self.dades_programacio.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.dades_programacio.setColumnHidden(2, True)
+        self.dades_programacio.setWordWrap(True)
         self.distribucio.addWidget(self.dades_programacio)
         self.selector_materia = QComboBox()
         self.selector_materia.currentIndexChanged.connect(self.canvi_materia_seleccionada)
@@ -71,7 +72,7 @@ class Finestra(QWidget):
         self.dades_curriculum.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.dades_curriculum.setColumnHidden(2, True)
         self.generar_opcions_materies()
-        self.dades_curriculum.clicked.connect(self.seleccio_valors)
+        self.boto_afegir.clicked.connect(self.afegir_criteris)
 
     def generar_opcions_materies(self):
         self.dades_selector_materia = LectorMateriesCompletes(0).obtenir_materies()
@@ -108,9 +109,15 @@ class Finestra(QWidget):
             items.append(item)
         self.dades_curriculum.insertTopLevelItems(0, items)
 
-    def seleccio_valors(self):
-        print(self.dades_curriculum.currentItem().childCount())
-        print(self.dades_curriculum.currentItem().text(2))
+
+
+    def afegir_criteris(self):
+        element_afegir = self.dades_curriculum.currentItem()
+        element_copia = element_afegir.clone()
+        elements_presents = self.dades_programacio.findItems(element_afegir.text(1), Qt.MatchExactly, column=1)
+        if elements_presents == [] or element_afegir.text(1) not in elements_presents[0].text(1):
+            self.dades_programacio.insertTopLevelItem(0, element_copia)
+        
 
 
 if __name__ == "__main__":
