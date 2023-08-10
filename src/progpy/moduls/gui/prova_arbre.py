@@ -102,7 +102,7 @@ class Finestra(QWidget):
             for element in criteris.values():
                 id_criteri = element['id']
                 text_criteri = f"{valor_actual}.{element['num']}: {element['descripcio']}"
-                nou_item = QTreeWidgetItem(["", text_criteri, str(id_criteri)])                
+                nou_item = QTreeWidgetItem(["", text_criteri, str(id_criteri)], type=10)             
                 nombre_files = (math.ceil(len(text_criteri)/30))
                 nou_item.setSizeHint(0, QSize(310, nombre_files*12))
                 item.addChild(nou_item)
@@ -112,12 +112,56 @@ class Finestra(QWidget):
 
 
     def afegir_criteris(self):
-        element_afegir = self.dades_curriculum.currentItem()
-        element_copia = element_afegir.clone()
-        elements_presents = self.dades_programacio.findItems(element_afegir.text(1), Qt.MatchExactly, column=1)
-        if elements_presents == [] or element_afegir.text(1) not in elements_presents[0].text(1):
-            self.dades_programacio.insertTopLevelItem(0, element_copia)
+            
+        def presencia_subitem():
+            """Retorna True si existeix element a afegir"""
+            # Comprovem tots els elements arrel del widget:
+            if self.dades_programacio.topLevelItemCount() == 0:
+                return False
+            # Comprovem que no existeixi element a afegir:
+            for item in range(0, self.dades_programacio.invisibleRootItem().childCount()):
+                for subitem in range(0, self.dades_programacio.topLevelItem(item).childCount()):
+                    print(item, subitem)
+                    if self.dades_programacio.topLevelItem(item).child(subitem).text(1) == self.dades_curriculum.currentItem().text(1):
+                        return True
+            return False
+            # Si coincideix amb el text de l'element superior, no s'afegeix:
         
+        def comprovar_pares():
+            """Retorna True si existeix element pare a afegir"""
+            # Comprovem tots els elements arrel del widget:
+            if self.dades_programacio.topLevelItemCount() == 0:
+                return False
+            for item in range(0, self.dades_programacio.topLevelItemCount()):
+                # Comprovem que hi hagin elements pare:
+                if self.dades_programacio.topLevelItem(item).text(1) == \
+                        self.dades_curriculum.currentItem().parent().text(1):
+                    return True
+            return False
+
+        element_afegir = self.dades_curriculum.currentItem()
+        elements_presents = self.dades_programacio.findItems(element_afegir.text(1), Qt.MatchExactly, column=1)
+        element_copia = element_afegir.clone()
+        if element_afegir.type() == 0:
+            if elements_presents == [] or element_afegir.text(1) not in elements_presents[0].text(1):
+                self.dades_programacio.insertTopLevelItem(0, element_copia)
+        # Si és un sub-item, el tipus és 0:
+        elif element_afegir.type() == 10:
+            item_pare = element_afegir.parent()
+            # Comprovem que l'elimnet no existeixi:
+            if presencia_subitem() is False:
+                # Comprovem que l'element arrel no existeixi:
+                if comprovar_pares() is False:
+                # Si no existeix, se'n fa una copia, però incloent tan sols el subelement:
+                    nou_pare = QTreeWidgetItem([item_pare.text(0), item_pare.text(1), item_pare.text(2)], type=0)
+                    nou_pare.addChild(element_copia)
+                    calcul_alçada_nou_pare = len(nou_pare.text(1))/30
+                    nou_pare.setSizeHint(0, QSize(310, math.ceil(calcul_alçada_nou_pare)*11))
+                    self.dades_programacio.insertTopLevelItem(0, nou_pare)
+                elif comprovar_pares() is True:
+                # Si existeix, s'adjunta al ja existent:
+                    self.dades_programacio.findItems(item_pare.text(1), Qt.MatchExactly, column=1)[0].addChild(element_copia)
+        self.dades_programacio.sortByColumn(0, Qt.AscendingOrder)
 
 
 if __name__ == "__main__":
