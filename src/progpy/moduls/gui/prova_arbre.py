@@ -73,6 +73,7 @@ class Finestra(QWidget):
         self.dades_curriculum.setColumnHidden(2, True)
         self.generar_opcions_materies()
         self.boto_afegir.clicked.connect(self.afegir_criteris)
+        self.boto_eliminar.clicked.connect(self.eliminar_elements)
 
     def generar_opcions_materies(self):
         self.dades_selector_materia = LectorMateriesCompletes(0).obtenir_materies()
@@ -102,7 +103,7 @@ class Finestra(QWidget):
             for element in criteris.values():
                 id_criteri = element['id']
                 text_criteri = f"{valor_actual}.{element['num']}: {element['descripcio']}"
-                nou_item = QTreeWidgetItem(["", text_criteri, str(id_criteri)], type=10)             
+                nou_item = QTreeWidgetItem(["", text_criteri, str(id_criteri)], type=10)            
                 nombre_files = (math.ceil(len(text_criteri)/30))
                 nou_item.setSizeHint(0, QSize(310, nombre_files*12))
                 item.addChild(nou_item)
@@ -112,6 +113,8 @@ class Finestra(QWidget):
 
 
     def afegir_criteris(self):
+        """Afegir criteris a l'arbre"""
+
             
         def presencia_subitem():
             """Retorna True si existeix element a afegir"""
@@ -121,7 +124,6 @@ class Finestra(QWidget):
             # Comprovem que no existeixi element a afegir:
             for item in range(0, self.dades_programacio.invisibleRootItem().childCount()):
                 for subitem in range(0, self.dades_programacio.topLevelItem(item).childCount()):
-                    print(item, subitem)
                     if self.dades_programacio.topLevelItem(item).child(subitem).text(1) == self.dades_curriculum.currentItem().text(1):
                         return True
             return False
@@ -139,30 +141,45 @@ class Finestra(QWidget):
                     return True
             return False
 
-        element_afegir = self.dades_curriculum.currentItem()
-        elements_presents = self.dades_programacio.findItems(element_afegir.text(1), Qt.MatchExactly, column=1)
-        element_copia = element_afegir.clone()
-        if element_afegir.type() == 0:
-            if elements_presents == [] or element_afegir.text(1) not in elements_presents[0].text(1):
-                self.dades_programacio.insertTopLevelItem(0, element_copia)
-        # Si és un sub-item, el tipus és 0:
-        elif element_afegir.type() == 10:
-            item_pare = element_afegir.parent()
-            # Comprovem que l'elimnet no existeixi:
-            if presencia_subitem() is False:
-                # Comprovem que l'element arrel no existeixi:
-                if comprovar_pares() is False:
-                # Si no existeix, se'n fa una copia, però incloent tan sols el subelement:
-                    nou_pare = QTreeWidgetItem([item_pare.text(0), item_pare.text(1), item_pare.text(2)], type=0)
-                    nou_pare.addChild(element_copia)
-                    calcul_alçada_nou_pare = len(nou_pare.text(1))/30
-                    nou_pare.setSizeHint(0, QSize(310, math.ceil(calcul_alçada_nou_pare)*11))
-                    self.dades_programacio.insertTopLevelItem(0, nou_pare)
-                elif comprovar_pares() is True:
-                # Si existeix, s'adjunta al ja existent:
-                    self.dades_programacio.findItems(item_pare.text(1), Qt.MatchExactly, column=1)[0].addChild(element_copia)
-        self.dades_programacio.sortByColumn(0, Qt.AscendingOrder)
+        if self.dades_curriculum.currentItem() is not None:
+            element_afegir = self.dades_curriculum.currentItem()
+            elements_presents = self.dades_programacio.findItems(element_afegir.text(1), Qt.MatchExactly, column=1)
+            element_copia = element_afegir.clone()
+            if element_afegir.type() == 0:
+                if elements_presents == [] or element_afegir.text(1) not in elements_presents[0].text(1):
+                    self.dades_programacio.insertTopLevelItem(0, element_copia)
+            # Si és un sub-item, el tipus és 0:
+            elif element_afegir.type() == 10:
+                item_pare = element_afegir.parent()
+                # Comprovem que l'elimnet no existeixi:
+                if presencia_subitem() is False:
+                    nou_fill = QTreeWidgetItem([element_afegir.text(0), element_afegir.text(1), element_afegir.text(2)], type=10)
+                    calcul_alçada_nou_fill = len(nou_fill.text(1))/30
+                    nou_fill.setSizeHint(0, QSize(310, math.ceil(calcul_alçada_nou_fill)*11))
+                    # Comprovem que l'element arrel no existeixi:
+                    if comprovar_pares() is False:
+                    # Si no existeix, se'n fa una copia, però incloent tan sols el subelement:
+                        nou_pare = QTreeWidgetItem([item_pare.text(0), item_pare.text(1), item_pare.text(2)], type=0)
+                        nou_pare.addChild(nou_fill)
+                        calcul_alçada_nou_pare = len(nou_pare.text(1))/30
+                        nou_pare.setSizeHint(0, QSize(310, math.ceil(calcul_alçada_nou_pare)*11))
+                        self.dades_programacio.insertTopLevelItem(0, nou_pare)
+                    elif comprovar_pares() is True:
+                    # Si existeix, s'adjunta al ja existent:
+                        self.dades_programacio.findItems(item_pare.text(1), Qt.MatchExactly, column=1)[0].addChild(nou_fill)
+            self.dades_programacio.sortByColumn(0, Qt.AscendingOrder)
 
+
+    def eliminar_elements(self):
+        element_eliminar = self.dades_programacio.currentItem()
+        if element_eliminar.type() == 0:
+            self.dades_programacio.takeTopLevelItem(self.dades_programacio.indexOfTopLevelItem(element_eliminar))
+        elif element_eliminar.type() == 10:
+            index_element_eliminar = self.dades_programacio.currentItem().parent().indexOfChild(element_eliminar)
+            index_pare = self.dades_programacio.indexOfTopLevelItem(element_eliminar.parent())
+            self.dades_programacio.topLevelItem(index_pare).takeChild(index_element_eliminar)
+            if self.dades_programacio.topLevelItem(index_pare).childCount() == 0:
+                self.dades_programacio.takeTopLevelItem(index_pare)
 
 if __name__ == "__main__":
     app = QApplication([])
