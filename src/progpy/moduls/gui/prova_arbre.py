@@ -88,6 +88,7 @@ class Finestra(QWidget):
 
     def afegir_dades(self, materia):
         self.dades_curriculum.clear()
+        self.dades_programacio.clear()
         dades = conversioarbre(InformadorMateriaPlantilla(0).obtenir_competencies_criteris(materia))
         items = []
         for clau, values in dades.items():
@@ -144,15 +145,29 @@ class Finestra(QWidget):
         if self.dades_curriculum.currentItem() is not None:
             element_afegir = self.dades_curriculum.currentItem()
             elements_presents = self.dades_programacio.findItems(element_afegir.text(1), Qt.MatchExactly, column=1)
-            element_copia = element_afegir.clone()
             if element_afegir.type() == 0:
                 if elements_presents == [] or element_afegir.text(1) not in elements_presents[0].text(1):
-                    self.dades_programacio.insertTopLevelItem(0, element_copia)
+                    # "Clonem" l'element actual:
+                    nou_element = QTreeWidgetItem([element_afegir.text(0), element_afegir.text(1), element_afegir.text(2)], type=0)
+                    calcul_alçada_nou_element = len(nou_element.text(1))/30
+                    nou_element.setSizeHint(0, QSize(310, math.ceil(calcul_alçada_nou_element)*11))
+                    # Copiem els elements fills de l'element actual:
+                    for fill in range(0, element_afegir.childCount()):
+                        nou_fill = QTreeWidgetItem([element_afegir.child(fill).text(0),
+                                                    element_afegir.child(fill).text(1), element_afegir.child(fill).text(2)], type=10)
+                        calcul_alçada_nou_fill = len(nou_fill.text(1))/30
+                        nou_fill.setSizeHint(0, QSize(310, math.ceil(calcul_alçada_nou_fill)*11))
+                        nou_element.addChild(nou_fill)
+                    self.dades_programacio.insertTopLevelItem(0, nou_element)
+
+
             # Si és un sub-item, el tipus és 0:
             elif element_afegir.type() == 10:
                 item_pare = element_afegir.parent()
-                # Comprovem que l'elimnet no existeixi:
+                # Comprovem que l'element no existeixi:
                 if presencia_subitem() is False:
+                    # Utilitzem aquesta manera perquè si no, no es copia el paràmetre type, encara que s'utilitzi
+                    # el mètod clone:
                     nou_fill = QTreeWidgetItem([element_afegir.text(0), element_afegir.text(1), element_afegir.text(2)], type=10)
                     calcul_alçada_nou_fill = len(nou_fill.text(1))/30
                     nou_fill.setSizeHint(0, QSize(310, math.ceil(calcul_alçada_nou_fill)*11))
@@ -168,18 +183,41 @@ class Finestra(QWidget):
                     # Si existeix, s'adjunta al ja existent:
                         self.dades_programacio.findItems(item_pare.text(1), Qt.MatchExactly, column=1)[0].addChild(nou_fill)
             self.dades_programacio.sortByColumn(0, Qt.AscendingOrder)
+            llista_afegir = []
+            for num_item_pare in range(self.dades_programacio.topLevelItemCount()):
+                id_pare = [int(self.dades_programacio.topLevelItem(num_item_pare).text(2))]
+                ids_fills = [int(self.dades_programacio.topLevelItem(num_item_pare).child(fill).text(2)) for fill in \
+                             range(self.dades_programacio.topLevelItem(num_item_pare).childCount())]
+                id_pare.append(ids_fills)
+                llista_afegir.append(id_pare)
+            print(llista_afegir)
 
 
     def eliminar_elements(self):
+        
+        def recull_elements_post_eliminar():
+            llista_eliminar = []
+            for num_item_pare in range(self.dades_programacio.topLevelItemCount()):
+                id_pare = [int(self.dades_programacio.topLevelItem(num_item_pare).text(2))]
+                ids_fills = [int(self.dades_programacio.topLevelItem(num_item_pare).child(fill).text(2)) for fill in \
+                            range(self.dades_programacio.topLevelItem(num_item_pare).childCount())]
+                id_pare.append(ids_fills)
+                llista_eliminar.append(id_pare)
+            print(llista_eliminar)
+        
         element_eliminar = self.dades_programacio.currentItem()
+        print(element_eliminar.type())
         if element_eliminar.type() == 0:
             self.dades_programacio.takeTopLevelItem(self.dades_programacio.indexOfTopLevelItem(element_eliminar))
+            recull_elements_post_eliminar()
         elif element_eliminar.type() == 10:
             index_element_eliminar = self.dades_programacio.currentItem().parent().indexOfChild(element_eliminar)
             index_pare = self.dades_programacio.indexOfTopLevelItem(element_eliminar.parent())
             self.dades_programacio.topLevelItem(index_pare).takeChild(index_element_eliminar)
             if self.dades_programacio.topLevelItem(index_pare).childCount() == 0:
                 self.dades_programacio.takeTopLevelItem(index_pare)
+            recull_elements_post_eliminar()
+
 
 if __name__ == "__main__":
     app = QApplication([])
